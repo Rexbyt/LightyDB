@@ -1,0 +1,13 @@
+﻿<Properties StartupConfiguration="{B8A3D14C-6D7A-4635-A019-3BB3AA9F48BD}|Default">
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug|x86" />
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MonoDevelop.Ide.Workbench ActiveDocument="Winux\Data\SqliteCompact.cs">
+    <Files>
+      <File FileName="Winux\Data\SqliteCompact.cs" Line="6" Column="12" />
+    </Files>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.ItemProperties.WinuxDB PreferredExecutionTarget="MonoDevelop.Default" />
+</Properties>
