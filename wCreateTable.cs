@@ -8,9 +8,14 @@ namespace WinuxDB
 		public int ColumnIndex { get; set; }
 	}
 
+	public class CustomCellRendererCombo : CellRendererCombo
+	{
+		public int ColumnIndex { get; set; }
+	}
+
 	public partial class wCreateTable : Gtk.Window
 	{
-		ListStore rows;
+		private ListStore rows;
 
 		public wCreateTable() :
 				base(Gtk.WindowType.Toplevel)
@@ -31,7 +36,24 @@ namespace WinuxDB
 				EditableCell1.Edited += new EditedHandler(OnEdt);
 				tblColumns.AppendColumn("Value", EditableCell1, "text", EditableCell1.ColumnIndex);
 
-				rows = new ListStore(typeof(string), typeof(string));
+				CustomCellRendererCombo EditableCell2 = new CustomCellRendererCombo();
+				ListStore listType = new ListStore(typeof(string));
+				EditableCell2.Editable = true;
+				EditableCell2.Mode = CellRendererMode.Editable;
+				EditableCell2.ColumnIndex = 2;
+				EditableCell2.TextColumn = 0;
+				EditableCell2.Model = listType;
+
+				listType.AppendValues("Numeric");
+				listType.AppendValues("Text");
+				listType.AppendValues("Date");
+				listType.AppendValues("Time");
+				listType.AppendValues("Money");
+
+				EditableCell2.Edited += new EditedHandler(OnComboEdt);
+				tblColumns.AppendColumn("Type", EditableCell2, "combo", EditableCell2.ColumnIndex);
+
+				rows = new ListStore(typeof(string), typeof(string), typeof(ComboBox));
 				tblColumns.Model = rows;
 
 				tblColumns.ShowAll();
@@ -50,11 +72,30 @@ namespace WinuxDB
 			tblColumns.Model.SetValue(iter, ((CustomCellRenderText)o).ColumnIndex, args.NewText);
 		}
 
+		void OnComboEdt(object o, EditedArgs args)
+		{
+			/*TreeIter iter;
+
+			tblColumns.Selection.GetSelected(out iter);
+			tblColumns.Model.SetValue(iter, ((CustomCellRendererCombo)o).ColumnIndex, ((ComboBox)args.RetVal));*/
+		}
+
 		protected void OnActAddColumnActivated(object sender, EventArgs e)
 		{
-			this.rows.AppendValues("...", "...");
-			tblColumns.Model = this.rows;
-			tblColumns.ShowAll();
+			try
+			{
+				//string[] arrType = new string[] { "First item", "Second item", "Next item", "Very next item" };
+				/**/ComboBox cmbType = new ComboBox();
+				cmbType.AppendText("First item");
+				cmbType.AppendText("Second item");
+
+				this.rows.AppendValues("...", "...", "");
+				tblColumns.Model = this.rows;
+				tblColumns.ShowAll();
+			}
+			catch (Exception err){
+				ExceptReport.Details(err);
+			}
 		}
 
 		protected void OnActDeleteActivated(object sender, EventArgs e)
