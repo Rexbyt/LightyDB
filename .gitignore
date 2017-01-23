@@ -1,4 +1,5 @@
-/bin
 /obj
-/packages
 /packages.config
+/bin/Debug/WinuxDB.exe
+/bin/Debug/*.dll
+/bin/Debug/*.pdb
