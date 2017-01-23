@@ -42,6 +42,7 @@ namespace WinuxDB
 				EditableCell2.Mode = CellRendererMode.Editable;
 				EditableCell2.ColumnIndex = 2;
 				EditableCell2.TextColumn = 0;
+				//EditableCell2.Foreground = "blue";
 				EditableCell2.Model = listType;
 
 				listType.AppendValues("Numeric");
@@ -66,18 +67,32 @@ namespace WinuxDB
 
 		void OnEdt(object o, EditedArgs args)
 		{
-			TreeIter iter;
+			try
+			{
+				TreeIter iter;
 
-			tblColumns.Selection.GetSelected(out iter);
-			tblColumns.Model.SetValue(iter, ((CustomCellRenderText)o).ColumnIndex, args.NewText);
+				tblColumns.Selection.GetSelected(out iter);
+				tblColumns.Model.SetValue(iter, ((CustomCellRenderText)o).ColumnIndex, args.NewText);
+			}
+			catch (Exception err){
+				ExceptReport.Details(err);
+			}
 		}
 
 		void OnComboEdt(object o, EditedArgs args)
 		{
-			/*TreeIter iter;
+			try
+			{
+				TreeIter tblIter;
 
-			tblColumns.Selection.GetSelected(out iter);
-			tblColumns.Model.SetValue(iter, ((CustomCellRendererCombo)o).ColumnIndex, ((ComboBox)args.RetVal));*/
+				tblColumns.Selection.GetSelected(out tblIter);
+				//tblColumns.Model.SetValue(tblIter, 2, args.NewText);
+				//MsgBox.Apply(combo.ToString(), "");
+
+			}
+			catch (Exception err){
+				ExceptReport.Details(err);
+			}
 		}
 
 		protected void OnActAddColumnActivated(object sender, EventArgs e)
