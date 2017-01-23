@@ -3,3 +3,4 @@
 /bin/Debug/WinuxDB.exe
 /bin/Debug/*.dll
 /bin/Debug/*.pdb
+/bin/Debug/*.mdb
