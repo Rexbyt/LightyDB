@@ -3,12 +3,17 @@ using Winux.Dialogs;
 using Gtk;
 namespace WinuxDB
 {
-	public class CustomCellRenderText : CellRendererText
+	public class CustomCellRendererText : CellRendererText
 	{ 
 		public int ColumnIndex { get; set; }
 	}
 
 	public class CustomCellRendererCombo : CellRendererCombo
+	{
+		public int ColumnIndex { get; set; }
+	}
+
+	public class CustomCellRenderer : CellRenderer
 	{
 		public int ColumnIndex { get; set; }
 	}
@@ -24,13 +29,13 @@ namespace WinuxDB
 
 			try
 			{
-				CustomCellRenderText EditableCell = new CustomCellRenderText();
+				CustomCellRendererText EditableCell = new CustomCellRendererText();
 				EditableCell.Editable = true;
 				EditableCell.ColumnIndex = 0;
 				EditableCell.Edited += new EditedHandler(OnEdt);
 				tblColumns.AppendColumn("Parameter", EditableCell, "text", EditableCell.ColumnIndex);
 
-				CustomCellRenderText EditableCell1 = new CustomCellRenderText();
+				CustomCellRendererText EditableCell1 = new CustomCellRendererText();
 				EditableCell1.Editable = true;
 				EditableCell1.ColumnIndex = 1;
 				EditableCell1.Edited += new EditedHandler(OnEdt);
@@ -42,7 +47,7 @@ namespace WinuxDB
 				EditableCell2.Mode = CellRendererMode.Editable;
 				EditableCell2.ColumnIndex = 2;
 				EditableCell2.TextColumn = 0;
-				//EditableCell2.Foreground = "blue";
+				EditableCell2.HasEntry = true;
 				EditableCell2.Model = listType;
 
 				listType.AppendValues("Numeric");
@@ -51,8 +56,8 @@ namespace WinuxDB
 				listType.AppendValues("Time");
 				listType.AppendValues("Money");
 
-				EditableCell2.Edited += new EditedHandler(OnComboEdt);
-				tblColumns.AppendColumn("Type", EditableCell2, "combo", EditableCell2.ColumnIndex);
+				EditableCell2.Edited += new EditedHandler(OnEdt);
+				tblColumns.AppendColumn("Type", EditableCell2, "text", EditableCell2.ColumnIndex);
 
 				rows = new ListStore(typeof(string), typeof(string), typeof(ComboBox));
 				tblColumns.Model = rows;
@@ -72,24 +77,14 @@ namespace WinuxDB
 				TreeIter iter;
 
 				tblColumns.Selection.GetSelected(out iter);
-				tblColumns.Model.SetValue(iter, ((CustomCellRenderText)o).ColumnIndex, args.NewText);
-			}
-			catch (Exception err){
-				ExceptReport.Details(err);
-			}
-		}
-
-		void OnComboEdt(object o, EditedArgs args)
-		{
-			try
-			{
-				//TreeIter tblIter;
-
-				//tblColumns.Selection.GetSelected(out tblIter);
-				//tblColumns.Model.SetValue(tblIter, 2, args.NewText);
-				//MsgBox.Apply(combo.ToString(), "");
-				((CustomCellRendererCombo)o).Text = args.NewText;
-
+				if (o.ToString().Contains("RendererText"))
+				{
+					tblColumns.Model.SetValue(iter, ((CustomCellRendererText)o).ColumnIndex, args.NewText);
+				}
+				else if (o.ToString().Contains("RendererCombo")){
+					CustomCellRendererCombo combo = o as CustomCellRendererCombo;
+					tblColumns.Model.SetValue(iter, combo.ColumnIndex, args.NewText);
+				}
 			}
 			catch (Exception err){
 				ExceptReport.Details(err);
@@ -100,7 +95,7 @@ namespace WinuxDB
 		{
 			try
 			{
-				this.rows.AppendValues("...", "...", "Text");
+				this.rows.AppendValues("...", "...", "...");
 				tblColumns.Model = this.rows;
 				tblColumns.ShowAll();
 			}
