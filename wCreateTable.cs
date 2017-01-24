@@ -83,11 +83,12 @@ namespace WinuxDB
 		{
 			try
 			{
-				TreeIter tblIter;
+				//TreeIter tblIter;
 
-				tblColumns.Selection.GetSelected(out tblIter);
+				//tblColumns.Selection.GetSelected(out tblIter);
 				//tblColumns.Model.SetValue(tblIter, 2, args.NewText);
 				//MsgBox.Apply(combo.ToString(), "");
+				((CustomCellRendererCombo)o).Text = args.NewText;
 
 			}
 			catch (Exception err){
@@ -99,12 +100,7 @@ namespace WinuxDB
 		{
 			try
 			{
-				//string[] arrType = new string[] { "First item", "Second item", "Next item", "Very next item" };
-				/**/ComboBox cmbType = new ComboBox();
-				cmbType.AppendText("First item");
-				cmbType.AppendText("Second item");
-
-				this.rows.AppendValues("...", "...", "");
+				this.rows.AppendValues("...", "...", "Text");
 				tblColumns.Model = this.rows;
 				tblColumns.ShowAll();
 			}
