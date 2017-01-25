@@ -1,6 +1,12 @@
 /obj
 /packages.config
+/packages
 /bin/Debug/WinuxDB.exe
 /bin/Debug/*.dll
 /bin/Debug/*.pdb
 /bin/Debug/*.mdb
+/bin/Debug/*.xml
+/bin/Debug/*.config
+/bin/Debug/x64
+/bin/Debug/x86
+/App.config

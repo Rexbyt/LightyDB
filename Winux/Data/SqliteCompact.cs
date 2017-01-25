@@ -3,14 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Data;
 using System.Xml;
-using Mono.Data.Sqlite;
+using System.Data.SQLite;
 using System.Windows.Forms;
 
 namespace Winux.Data
 {
     class SqliteCompact
     {
-        public SqliteConnection Connection = null;
+        public SQLiteConnection Connection = null;
         public string sqlString = "";
         private string connstr = "";
 
@@ -26,13 +26,32 @@ namespace Winux.Data
         public SqliteCompact(string connectionString) {
             try
             {
-                this.Connection = new SqliteConnection(connectionString);
+				this.Connection = new SQLiteConnection(connectionString);
                 this.connstr = connectionString;
             }
             catch (Exception err) {
                 this.errors = err.Message.ToString() + " || " + err.StackTrace;
             }
         }
+
+		/// <summary>
+		/// Конструктор для создания БД с последующим подключением к БД
+		/// </summary>
+		/// <param name="connectionString">Строка соединения</param>
+		/// <param name="create">Создать базу данных по указанному пути</param>
+		public SqliteCompact(string connectionString, bool create)
+		{
+			try
+			{
+				SQLiteConnection.CreateFile(connectionString);
+				this.Connection = new SQLiteConnection(connectionString);
+				this.connstr = connectionString;
+			}
+			catch (Exception err)
+			{
+				this.errors = err.Message.ToString() + " || " + err.StackTrace;
+			}
+		}
 
         /// <summary>
         /// Получаем сообщение об ошибке выполнения запроса, если таковая имеется. В лучшем случае ничего не произойдет
@@ -73,7 +92,7 @@ namespace Winux.Data
         /// <returns>Автоматически присвоены ID</returns>
         public int getAutoincrementID()
         {
-            SqliteCommand cmd = new SqliteCommand("SELECT SCOPE_IDENTITY()", this.Connection);
+            SQLiteCommand cmd = new SQLiteCommand("SELECT SCOPE_IDENTITY()", this.Connection);
             object val = cmd.ExecuteScalar();
             return Convert.ToInt32(val);
         }
@@ -83,7 +102,7 @@ namespace Winux.Data
             try
             {
                 this.Open();
-                SqliteCommand cmd = new SqliteCommand(sql, this.Connection);
+                SQLiteCommand cmd = new SQLiteCommand(sql, this.Connection);
                 object val = cmd.ExecuteScalar();
                 this.Close();
                 return val;
@@ -107,7 +126,7 @@ namespace Winux.Data
                     List<object> values = mtch.Groups[3].Value.Trim().Split(",".ToCharArray()).ToList<object>();*/
 
                     this.Open();
-                    SqliteCommand cmd = new SqliteCommand("USE "+baseName+"; EXECUTE "+procedure, this.Connection);
+                    SQLiteCommand cmd = new SQLiteCommand("USE "+baseName+"; EXECUTE "+procedure, this.Connection);
                     cmd.CommandType = CommandType.Text;
 
                     /*if (param.Count > 0)
@@ -146,7 +165,7 @@ namespace Winux.Data
         }
 
         public int getLastIncrementID(string tblName) {
-            SqliteCommand cmd = new SqliteCommand("SELECT MAX(id) FROM " + tblName,this.Connection);
+            SQLiteCommand cmd = new SQLiteCommand("SELECT MAX(id) FROM " + tblName,this.Connection);
             object val = cmd.ExecuteScalar();
             return Convert.ToInt32(val);
         }
@@ -205,7 +224,7 @@ namespace Winux.Data
             try
             {
                 this.sqlString = sql;
-                SqliteCommand cmd = new SqliteCommand(sql, this.Connection);
+                SQLiteCommand cmd = new SQLiteCommand(sql, this.Connection);
                 int res = cmd.ExecuteNonQuery(); 
                 return res;
             }
@@ -264,7 +283,7 @@ namespace Winux.Data
             try
             {
                 this.sqlString = sql;
-                SqliteCommand cmd = new SqliteCommand(sql, this.Connection);
+                SQLiteCommand cmd = new SQLiteCommand(sql, this.Connection);
                 int res = cmd.ExecuteNonQuery();
                 return res;
             }
@@ -304,7 +323,7 @@ namespace Winux.Data
             try
             {
                 this.sqlString = sql;
-                SqliteCommand cmd = new SqliteCommand(sql,this.Connection);
+                SQLiteCommand cmd = new SQLiteCommand(sql,this.Connection);
                 return cmd.ExecuteNonQuery();
             }
             catch(Exception err) {
@@ -368,7 +387,7 @@ namespace Winux.Data
             try
             {
                 this.sqlString = sql;
-                SqliteCommand cmd = new SqliteCommand(sql, this.Connection);
+                SQLiteCommand cmd = new SQLiteCommand(sql, this.Connection);
                 return cmd.ExecuteNonQuery();
             }
             catch (Exception err)
@@ -394,7 +413,7 @@ namespace Winux.Data
                 }
 
                 this.sqlString = sql;
-                SqliteCommand cmd = new SqliteCommand(sql, this.Connection);
+                SQLiteCommand cmd = new SQLiteCommand(sql, this.Connection);
                 int res = cmd.ExecuteNonQuery();
                 if (res <= 0)
                 {
@@ -417,7 +436,7 @@ namespace Winux.Data
 			DataSet ds = new DataSet();
             try
             {
-                SqliteDataAdapter da = new SqliteDataAdapter(sql, this.Connection);
+                SQLiteDataAdapter da = new SQLiteDataAdapter(sql, this.Connection);
                 da.Fill(ds,"result");
                 return ds.Tables["result"].Rows;
             }

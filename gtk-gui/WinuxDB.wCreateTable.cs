@@ -237,6 +237,7 @@ namespace WinuxDB
 			this.DefaultWidth = 468;
 			this.DefaultHeight = 543;
 			this.Show();
+			this.actCreate.Activated += new global::System.EventHandler(this.OnActCreateActivated);
 			this.actAddColumn.Activated += new global::System.EventHandler(this.OnActAddColumnActivated);
 			this.actDelete.Activated += new global::System.EventHandler(this.OnActDeleteActivated);
 			this.tblColumns.KeyPressEvent += new global::Gtk.KeyPressEventHandler(this.OnTblColumnsKeyPressEvent);

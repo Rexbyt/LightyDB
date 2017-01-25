@@ -13,13 +13,17 @@ public partial class wndMain
 
 	private global::Gtk.Action actActions;
 
-	private global::Gtk.Action actCreateTable;
+	private global::Gtk.Action CreateTableAction;
 
 	private global::Gtk.Action actCreateColumn;
 
 	private global::Gtk.Action actEditTable;
 
 	private global::Gtk.Action actEditColumn;
+
+	private global::Gtk.Action actCreateDatabase;
+
+	private global::Gtk.Action actCreateSqlite3;
 
 	private global::Gtk.VBox vboxMain;
 
@@ -54,9 +58,9 @@ public partial class wndMain
 		this.actActions = new global::Gtk.Action("actActions", global::Mono.Unix.Catalog.GetString("Actions"), null, null);
 		this.actActions.ShortLabel = global::Mono.Unix.Catalog.GetString("Actions");
 		w1.Add(this.actActions, null);
-		this.actCreateTable = new global::Gtk.Action("actCreateTable", global::Mono.Unix.Catalog.GetString("Create table"), null, null);
-		this.actCreateTable.ShortLabel = global::Mono.Unix.Catalog.GetString("Create table");
-		w1.Add(this.actCreateTable, null);
+		this.CreateTableAction = new global::Gtk.Action("CreateTableAction", global::Mono.Unix.Catalog.GetString("Create table"), null, null);
+		this.CreateTableAction.ShortLabel = global::Mono.Unix.Catalog.GetString("Create table");
+		w1.Add(this.CreateTableAction, null);
 		this.actCreateColumn = new global::Gtk.Action("actCreateColumn", global::Mono.Unix.Catalog.GetString("Create column"), null, null);
 		this.actCreateColumn.ShortLabel = global::Mono.Unix.Catalog.GetString("Create column");
 		w1.Add(this.actCreateColumn, null);
@@ -66,6 +70,12 @@ public partial class wndMain
 		this.actEditColumn = new global::Gtk.Action("actEditColumn", global::Mono.Unix.Catalog.GetString("Edit column"), null, null);
 		this.actEditColumn.ShortLabel = global::Mono.Unix.Catalog.GetString("Edit column");
 		w1.Add(this.actEditColumn, null);
+		this.actCreateDatabase = new global::Gtk.Action("actCreateDatabase", global::Mono.Unix.Catalog.GetString("Create Database"), null, null);
+		this.actCreateDatabase.ShortLabel = global::Mono.Unix.Catalog.GetString("Create Database");
+		w1.Add(this.actCreateDatabase, null);
+		this.actCreateSqlite3 = new global::Gtk.Action("actCreateSqlite3", global::Mono.Unix.Catalog.GetString("Sqlite3"), null, null);
+		this.actCreateSqlite3.ShortLabel = global::Mono.Unix.Catalog.GetString("Sqlite3");
+		w1.Add(this.actCreateSqlite3, null);
 		this.UIManager.InsertActionGroup(w1, 0);
 		this.AddAccelGroup(this.UIManager.AccelGroup);
 		this.Name = "wndMain";
@@ -76,7 +86,7 @@ public partial class wndMain
 		this.vboxMain.Name = "vboxMain";
 		this.vboxMain.BorderWidth = ((uint)(3));
 		// Container child vboxMain.Gtk.Box+BoxChild
-		this.UIManager.AddUiFromString(@"<ui><menubar name='mBar'><menu name='actFile' action='actFile'/><menu name='actActions' action='actActions'><menuitem name='actCreateTable' action='actCreateTable'/><menuitem name='actEditTable' action='actEditTable'/><menuitem name='actCreateColumn' action='actCreateColumn'/><menuitem name='actEditColumn' action='actEditColumn'/></menu></menubar></ui>");
+		this.UIManager.AddUiFromString(@"<ui><menubar name='mBar'><menu name='actFile' action='actFile'><menu name='actCreateDatabase' action='actCreateDatabase'><menuitem name='actCreateSqlite3' action='actCreateSqlite3'/></menu></menu><menu name='actActions' action='actActions'><menuitem name='CreateTableAction' action='CreateTableAction'/><menuitem name='actEditTable' action='actEditTable'/><menuitem name='actCreateColumn' action='actCreateColumn'/><menuitem name='actEditColumn' action='actEditColumn'/></menu></menubar></ui>");
 		this.mBar = ((global::Gtk.MenuBar)(this.UIManager.GetWidget("/mBar")));
 		this.mBar.Name = "mBar";
 		this.vboxMain.Add(this.mBar);
@@ -116,6 +126,10 @@ public partial class wndMain
 		this.StatusBar.HasResizeGrip = false;
 		// Container child StatusBar.Gtk.Box+BoxChild
 		this.cmb1 = global::Gtk.ComboBox.NewText();
+		this.cmb1.AppendText(global::Mono.Unix.Catalog.GetString("First item"));
+		this.cmb1.AppendText(global::Mono.Unix.Catalog.GetString("Second item"));
+		this.cmb1.AppendText(global::Mono.Unix.Catalog.GetString("Next item"));
+		this.cmb1.AppendText(global::Mono.Unix.Catalog.GetString("Very next item"));
 		this.cmb1.Name = "cmb1";
 		this.StatusBar.Add(this.cmb1);
 		global::Gtk.Box.BoxChild w6 = ((global::Gtk.Box.BoxChild)(this.StatusBar[this.cmb1]));
@@ -140,6 +154,6 @@ public partial class wndMain
 		this.DefaultHeight = 496;
 		this.Show();
 		this.DeleteEvent += new global::Gtk.DeleteEventHandler(this.OnDeleteEvent);
-		this.actCreateTable.Activated += new global::System.EventHandler(this.OnActCreateTableActivated);
+		this.CreateTableAction.Activated += new global::System.EventHandler(this.OnActCreateTableActivated);
 	}
 }

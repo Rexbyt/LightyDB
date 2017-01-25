@@ -31,7 +31,7 @@
         <property name="Label" translatable="yes">Actions</property>
         <property name="ShortLabel" translatable="yes">Actions</property>
       </action>
-      <action id="actCreateTable">
+      <action id="CreateTableAction">
         <property name="Type">Action</property>
         <property name="Label" translatable="yes">Create table</property>
         <property name="ShortLabel" translatable="yes">Create table</property>
@@ -52,6 +52,16 @@
         <property name="Label" translatable="yes">Edit column</property>
         <property name="ShortLabel" translatable="yes">Edit column</property>
       </action>
+      <action id="actCreateDatabase">
+        <property name="Type">Action</property>
+        <property name="Label" translatable="yes">Create Database</property>
+        <property name="ShortLabel" translatable="yes">Create Database</property>
+      </action>
+      <action id="actCreateSqlite3">
+        <property name="Type">Action</property>
+        <property name="Label" translatable="yes">Sqlite3</property>
+        <property name="ShortLabel" translatable="yes">Sqlite3</property>
+      </action>
     </action-group>
     <property name="MemberName" />
     <property name="Title" translatable="yes">WinuxDB</property>
@@ -65,9 +75,13 @@
           <widget class="Gtk.MenuBar" id="mBar">
             <property name="MemberName" />
             <node name="mBar" type="Menubar">
-              <node type="Menu" action="actFile" />
+              <node type="Menu" action="actFile">
+                <node type="Menu" action="actCreateDatabase">
+                  <node type="Menuitem" action="actCreateSqlite3" />
+                </node>
+              </node>
               <node type="Menu" action="actActions">
-                <node type="Menuitem" action="actCreateTable" />
+                <node type="Menuitem" action="CreateTableAction" />
                 <node type="Menuitem" action="actEditTable" />
                 <node type="Menuitem" action="actCreateColumn" />
                 <node type="Menuitem" action="actEditColumn" />
@@ -124,7 +138,10 @@
               <widget class="Gtk.ComboBox" id="cmb1">
                 <property name="MemberName" />
                 <property name="IsTextCombo">True</property>
-                <property name="Items" translatable="yes" />
+                <property name="Items" translatable="yes">First item
+Second item
+Next item
+Very next item</property>
               </widget>
               <packing>
                 <property name="Position">1</property>
@@ -159,6 +176,7 @@
         <property name="ShortLabel" translatable="yes">Create</property>
         <property name="StockId">gtk-apply</property>
         <property name="Tooltip" translatable="yes" />
+        <signal name="Activated" handler="OnActCreateActivated" />
       </action>
       <action id="actAddColumn">
         <property name="Type">Action</property>
@@ -416,7 +434,7 @@
           <widget class="Gtk.Toolbar" id="toolbar2">
             <property name="MemberName" />
             <property name="ShowArrow">False</property>
-            <node name="__gtksharp_80_Stetic_Editor_ActionToolbar" type="Toolbar">
+            <node name="toolbar2" type="Toolbar">
               <node type="Toolitem" action="actAddColumn" />
               <node type="Toolitem" action="actDelete" />
             </node>
