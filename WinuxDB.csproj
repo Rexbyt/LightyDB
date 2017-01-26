@@ -102,7 +102,6 @@
     <Compile Include="gtk-gui\WinuxDB.wCreateTable.cs" />
     <Compile Include="Winux\Data\LinSqliteCompact.cs" />
     <Compile Include="Winux\Data\SqliteCompact.cs" />
-    <Compile Include="Prg\SqliteColumnType.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

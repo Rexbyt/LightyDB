@@ -86,10 +86,29 @@ namespace WinuxDB
 			UniqCell.Activatable = true;
 			UniqCell.Toggled += new ToggledHandler(OnToggled);
 			UniqCell.ColumnIndex = 4;
-			tblColumns.AppendColumn("Uniq", UniqCell, "bool", UniqCell.ColumnIndex);
+			tblColumns.AppendColumn("Uniq", UniqCell, "active", UniqCell.ColumnIndex);
 
-			rows = new ListStore(typeof(string), typeof(string), typeof(string), typeof(double), typeof(bool));
-			this.rows.AppendValues("id", "ID", "Integer", 0, true);
+			CustomCellRendererToggle RequiredCell = new CustomCellRendererToggle();
+			RequiredCell.Activatable = true;
+			RequiredCell.Toggled += new ToggledHandler(OnToggled);
+			RequiredCell.ColumnIndex = 5;
+			tblColumns.AppendColumn("Required", RequiredCell, "active", RequiredCell.ColumnIndex);
+
+			CustomCellRendererToggle PrimaryCell = new CustomCellRendererToggle();
+			PrimaryCell.Activatable = true;
+			PrimaryCell.Toggled += new ToggledHandler(OnToggled);
+			PrimaryCell.ColumnIndex = 6;
+			tblColumns.AppendColumn("Primary", PrimaryCell, "active", PrimaryCell.ColumnIndex);
+
+			CustomCellRendererToggle AutoincrementCell = new CustomCellRendererToggle();
+			AutoincrementCell.Activatable = true;
+			AutoincrementCell.Toggled += new ToggledHandler(OnToggled);
+			AutoincrementCell.ColumnIndex = 7;
+			tblColumns.AppendColumn("Autoincrement", AutoincrementCell, "active", AutoincrementCell.ColumnIndex);
+
+			rows = new ListStore(typeof(string), typeof(string), typeof(string), typeof(double), typeof(bool)
+			                    , typeof(bool), typeof(bool), typeof(bool));
+			this.rows.AppendValues("id", "ID", "Integer", 0, true, false, true, true);
 			tblColumns.Model = rows;
 
 			tblColumns.ShowAll();
@@ -106,9 +125,6 @@ namespace WinuxDB
 			{
 				bool val = (bool)store.GetValue(iter, chb.ColumnIndex);
 				store.SetValue(iter, chb.ColumnIndex, !val);
-			}
-			else {
-				MsgBox.Error("Лажааа!!", "");
 			}
 		}
 
@@ -146,7 +162,7 @@ namespace WinuxDB
 			try
 			{
 				//Create new row for column table
-				this.rows.AppendValues("...", "...", "...", 0);
+				this.rows.AppendValues("...", "...", "...", 0, false, false, false, false);
 				tblColumns.Model = this.rows;
 				tblColumns.ShowAll();
 			}
@@ -191,21 +207,30 @@ namespace WinuxDB
 		{
 			try
 			{
+				SqliteCompact scp = new SqliteCompact(XData.connString);
 				// Collect main request for create table
-				string tblName = txtTableName.Text;
-				string tblTitle = txtTableTitle.Text;
+				string tblName = txtTableName.Text.Trim().ToLower();
+				string tblTitle = txtTableTitle.Text.Trim();
+
+				scp.Open();
+				int rows = Convert.ToInt32(scp.QueryScalar("SELECT COUNT([name]) FROM sqlite_master WHERE type = 'table' AND LOWER([name]) = 'itbl_"+tblName+"'"));
+				if (rows > 0)
+				{
+					MsgBox.Warning("Table (" + tblName + ") already exists in database!", "Warning");
+					return;
+				}
+
 				// Prefix itbl_ helps to distinguish table info of user
 				// For auto select from sqlite_master
-				this.ColumnsSQL = "CREATE TABLE itbl_" + txtTableName.Text.Trim() + "(";
+				this.ColumnsSQL = "CREATE TABLE itbl_" + tblName + "(";
+
 				tblColumns.Model.Foreach(ForeachModelOftblColumns);
 
 				this.ColumnsSQL = this.ColumnsSQL.Trim().Substring(0, (this.ColumnsSQL.Trim().Length - 1))+");";
 
-				SqliteCompact scp = new SqliteCompact(XData.connString);
-				scp.Open();
-				scp.QueryScalar(this.ColumnsSQL);
+				scp.Execute(this.ColumnsSQL);
 				scp.Close();
-				MsgBox.Info("Table created successfully", "Информация");
+				MsgBox.Info("Table created successfully", "Information");
 			}
 			catch (Exception err){
 				ExceptReport.Details(err);
@@ -215,26 +240,37 @@ namespace WinuxDB
 		//Collect request for columns of new table
 		bool ForeachModelOftblColumns(TreeModel model, TreePath path, TreeIter iter)
 		{
-			string colName = model.GetValue(iter, 0).ToString().Trim();
-			string colTitle = model.GetValue(iter, 1).ToString().Trim();
-			string colType = model.GetValue(iter, 2).ToString().Trim();
-			double colSize = Convert.ToDouble(model.GetValue(iter, 3));
-			string size = "";
-			string toSqlite3Type = "";
-			if (colType.Trim().ToLower() == "money")
-				toSqlite3Type = "double";
-			else if (colType.Trim().ToLower() == "text" && colSize > 0.0)
-				toSqlite3Type = "varchar";
-			else
-				toSqlite3Type = colType.Trim().ToLower();
+			TreeIter newIter;
+			TreePath newPath = path;
 
-			if (colSize > 0.0)
-				size = "("+colSize.ToString()+")";
+			while (model.GetIter(out newIter, newPath))
+			{
+				string colName = model.GetValue(newIter, 0).ToString().Trim();
+				string colTitle = model.GetValue(newIter, 1).ToString().Trim();
+				string colType = model.GetValue(newIter, 2).ToString().Trim();
+				double colSize = Convert.ToDouble(model.GetValue(newIter, 3));
+				string colUniq = Convert.ToBoolean(model.GetValue(newIter, 4)) ? "UNIQUE" : "";
+				string colRequired = Convert.ToBoolean(model.GetValue(newIter, 5)) ? "_" : "";
+				string colPrimary = Convert.ToBoolean(model.GetValue(newIter, 6)) ? "PRIMARY KEY" : "";
+				string colAutoincrement = Convert.ToBoolean(model.GetValue(newIter, 7)) ? "AUTOINCREMENT" : "";
 
-			if(colName.ToLower() == "id")
-				this.ColumnsSQL += colName+" "+toSqlite3Type+size+" NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,";
-			else
-				this.ColumnsSQL += colName + " " + toSqlite3Type+ size + " NOT NULL,";
+				string size = "";
+				string toSqlite3Type = "";
+				if (colType.Trim().ToLower() == "money")
+					toSqlite3Type = "double";
+				else if (colType.Trim().ToLower() == "text" && colSize > 0.0)
+					toSqlite3Type = "varchar";
+				else
+					toSqlite3Type = colType.Trim().ToLower();
+
+				if (colSize > 0.0)
+					size = "(" + colSize.ToString() + ")";
+
+				this.ColumnsSQL += colName+colRequired + " " + toSqlite3Type + size + " NOT NULL " + colPrimary + " " + 
+					colAutoincrement + " " + colUniq + ",";
+
+				newPath.Next();
+			}
 			return true;
 		}
 }

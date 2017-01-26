@@ -15,10 +15,11 @@
         <property name="Label" translatable="yes">Файл</property>
         <property name="ShortLabel" translatable="yes">Файл</property>
       </action>
-      <action id="saveAction">
+      <action id="actRefreshTable">
         <property name="Type">Action</property>
         <property name="Label" translatable="yes" />
-        <property name="StockId">gtk-save</property>
+        <property name="StockId">gtk-refresh</property>
+        <signal name="Activated" handler="OnActRefreshTableActivated" />
       </action>
       <action id="actFile">
         <property name="Type">Action</property>
@@ -100,7 +101,7 @@
             <property name="MemberName" />
             <property name="ShowArrow">False</property>
             <node name="ToolBar" type="Toolbar">
-              <node type="Toolitem" action="saveAction" />
+              <node type="Toolitem" action="actRefreshTable" />
             </node>
           </widget>
           <packing>

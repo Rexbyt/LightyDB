@@ -63,7 +63,24 @@ namespace Winux.Dialogs
 				msg.Destroy();
 				return ResponseType.None;
 			}
-				
+		}
+
+		public static ResponseType Warning(string message, string title)
+		{
+			MessageDialog msg = new MessageDialog(null, DialogFlags.Modal, MessageType.Warning, ButtonsType.Ok, message);
+			msg.SetPosition(WindowPosition.Center);
+			msg.Title = title;
+			int res = msg.Run();
+			if (res < 0)
+			{
+				msg.Destroy();
+				return (ResponseType)res;
+			}
+			else
+			{
+				msg.Destroy();
+				return ResponseType.None;
+			}
 		}
 	}
 }

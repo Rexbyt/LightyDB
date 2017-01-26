@@ -24,14 +24,8 @@ namespace Winux.Data
         /// </summary>
         /// <param name="connectionString">Строка соединения</param>
         public SqliteCompact(string connectionString) {
-            try
-            {
-				this.Connection = new SQLiteConnection(connectionString);
-                this.connstr = connectionString;
-            }
-            catch (Exception err) {
-                this.errors = err.Message.ToString() + " || " + err.StackTrace;
-            }
+            this.Connection = new SQLiteConnection(connectionString);
+            this.connstr = connectionString;
         }
 
 		/// <summary>
@@ -41,50 +35,15 @@ namespace Winux.Data
 		/// <param name="create">Создать базу данных по указанному пути</param>
 		public SqliteCompact(string connectionString, bool create)
 		{
-			try
-			{
-				SQLiteConnection.CreateFile(connectionString);
-				this.Connection = new SQLiteConnection(connectionString);
-				this.connstr = connectionString;
-			}
-			catch (Exception err)
-			{
-				this.errors = err.Message.ToString() + " || " + err.StackTrace;
-			}
+			SQLiteConnection.CreateFile(connectionString);
+			this.Connection = new SQLiteConnection(connectionString);
+			this.connstr = connectionString;
 		}
 
-        /// <summary>
-        /// Получаем сообщение об ошибке выполнения запроса, если таковая имеется. В лучшем случае ничего не произойдет
-        /// </summary>
-        public int GetError()
-        {
-            if (this.errors.Trim().Length > 0)
-            {
-				Gtk.MessageDialog msg = new Gtk.MessageDialog(null, Gtk.DialogFlags.NoSeparator, Gtk.MessageType.Error, Gtk.ButtonsType.Ok, null);
-				msg.Text = "Произошла ошибка в процессе выполнения запроса к базе данных:\n" + this.errors;
-				msg.Title = "Ошибка";
-				if (msg.Run() < 0)
-					msg.Destroy();
-                this.errors = "";
-                return 1;
-            }
-            else {
-                return 0;
-            }
-        }
-
-        /// <summary>
-        /// Полчает результаты от множества запросов в DataSet
-        /// </summary>
-        /// <param name="queries">Список запросов {"Название таблице в DataSet для результат","Запрос"}</param>
-        /// <returns></returns>
-        public List<int> QueryList(List<string> queries) {
-            List<int> results = new List<int>();
-            foreach (string kvp in queries) {
-                 results.Add(this.Query(kvp).Count);
-            }
-            return results;
-        }
+		public DataRowCollection GetTableInfo(string tableName)
+		{
+			return this.Query("PRAGMA table_info('"+tableName+"')");
+		}
 
         /// <summary>
         /// Получаем autoincrement id внутри сессии
@@ -99,108 +58,37 @@ namespace Winux.Data
 
         public object QueryScalar(string sql)
         {
-            try
-            {
-                this.Open();
-                SQLiteCommand cmd = new SQLiteCommand(sql, this.Connection);
-                object val = cmd.ExecuteScalar();
-                this.Close();
-                return val;
-            }
-            catch (Exception err) {
-                this.Close();
-                this.errors = err.Message.ToString() + " ==> " + sql + " || " + err.StackTrace;
-                return -1;
-            }
-        }
-
-        public object Execute(string baseName, string procedure)
-        {
-            try
-            {
-                //Match mtch = Regex.Match(procedure, "([a-zA-Z0-9-_\\.]+){1}\\s*\\((.*)\\)\\s+VALUES\\s*\\((.*)\\)");
-                if (/*mtch.Success*/ true)
-                {
-                    /*string pName = mtch.Groups[1].Value.Trim();
-                    List<string> param = mtch.Groups[2].Value.Trim().Split(",".ToCharArray()).ToList<string>();
-                    List<object> values = mtch.Groups[3].Value.Trim().Split(",".ToCharArray()).ToList<object>();*/
-
-                    this.Open();
-                    SQLiteCommand cmd = new SQLiteCommand("USE "+baseName+"; EXECUTE "+procedure, this.Connection);
-                    cmd.CommandType = CommandType.Text;
-
-                    /*if (param.Count > 0)
-                    {
-                        if (param.Count == values.Count)
-                        {
-                            for (int i = 0; i < param.Count; i++)
-                            {
-                                Application.DoEvents();
-                                //cmd.Parameters.AddWithValue(param[i].Trim(), );
-                                cmd.Parameters.Add(values[i]);
-                            }
-                        }
-                        else
-                        {
-                            MessageBox.Show("Количество параметров и значений не совпадает!", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                            return "";
-                        }
-                    }*/
-
-                    object val = cmd.ExecuteNonQuery();
-
-                    this.Close();
-                    return val;
-                }
-                else {
-                    return 0;
-                }
-            }
-            catch (Exception err)
-            {
-                this.Close();
-                this.errors = err.Message.ToString() + " ==> " + procedure + " || " + err.StackTrace;
-                return -1;
-            }
-        }
-
-        public int getLastIncrementID(string tblName) {
-            SQLiteCommand cmd = new SQLiteCommand("SELECT MAX(id) FROM " + tblName,this.Connection);
+            SQLiteCommand cmd = new SQLiteCommand(sql, this.Connection);
             object val = cmd.ExecuteScalar();
-            return Convert.ToInt32(val);
+            return val;
+        }
+
+        public void Execute(string command)
+        {
+            SQLiteCommand cmd = new SQLiteCommand(command, this.Connection);
+            cmd.CommandType = CommandType.Text;
+			cmd.ExecuteNonQuery();
         }
 
         /// <summary>
         /// Открытие соединения
         /// </summary>
         public void Open() {
-            try
-            {
-                this.Connection.Open();
-            }
-            catch (Exception err) {
-                this.errors = err.Message.ToString() + " || " + err.StackTrace;
-            }
+            this.Connection.Open();
         }
 
         /// <summary>
         /// Закрытие соединения
         /// </summary>
         public void Close() {
-            try
-            {
-                this.Connection.Close();
-            }
-            catch (Exception err) {
-                this.errors = err.Message.ToString() + " || " + err.StackTrace;
-            }
+            this.Connection.Close();
         }
 
         /// <summary>
         /// Компактное добавление данных для избежания путаницы
         /// </summary>
         /// <param name="tblName">Имя таблици добавдения</param>
-        /// <param name="parameters">Перечисляем все поля и их значения в Dictionary</param>
+        /// <param name="param">Перечисляем все поля и их значения в Dictionary</param>
         /// <returns>Вернет количество добавленных строк</returns>
         public int Insert(string tblName, Dictionary<string,object> param) {
             string sql = "INSERT INTO " + tblName + " (";
@@ -221,17 +109,11 @@ namespace Winux.Data
             sql = sql.Trim().Substring(0, (sql.Length - 1));
             values = values.Trim().Substring(0,(values.Trim().Length - 1));
             sql += ") VALUES (" + values + ")";
-            try
-            {
-                this.sqlString = sql;
-                SQLiteCommand cmd = new SQLiteCommand(sql, this.Connection);
-                int res = cmd.ExecuteNonQuery(); 
-                return res;
-            }
-            catch(Exception err) {
-                this.errors = err.Message.ToString() + " || " + err.StackTrace;
-                return 0;
-            }
+            
+			this.sqlString = sql;
+            SQLiteCommand cmd = new SQLiteCommand(sql, this.Connection);
+            int res = cmd.ExecuteNonQuery(); 
+            return res;
         }
 
         /// <summary>
@@ -280,18 +162,11 @@ namespace Winux.Data
             sql = sql.Trim().Substring(0, (sql.Length - 1));
             values = values.Trim().Substring(0, (values.Trim().Length - 1));
             sql += ") VALUES (" + values + ")";
-            try
-            {
-                this.sqlString = sql;
-                SQLiteCommand cmd = new SQLiteCommand(sql, this.Connection);
-                int res = cmd.ExecuteNonQuery();
-                return res;
-            }
-            catch (Exception err)
-            {
-                this.errors = err.Message.ToString() + " || " + err.StackTrace;
-                return 0;
-            }
+            
+			this.sqlString = sql;
+            SQLiteCommand cmd = new SQLiteCommand(sql, this.Connection);
+            int res = cmd.ExecuteNonQuery();
+            return res;
         }
 
         /// <summary>
@@ -320,16 +195,10 @@ namespace Winux.Data
             if (filter.Trim().Length > 0) {
                 sql += " " + filter.Trim();
             }
-            try
-            {
-                this.sqlString = sql;
-                SQLiteCommand cmd = new SQLiteCommand(sql,this.Connection);
-                return cmd.ExecuteNonQuery();
-            }
-            catch(Exception err) {
-                this.errors = err.Message.ToString() + " || " + err.StackTrace;
-                return 0;
-            }
+            
+			this.sqlString = sql;
+            SQLiteCommand cmd = new SQLiteCommand(sql,this.Connection);
+            return cmd.ExecuteNonQuery();
         }
 
         /// <summary>
@@ -384,17 +253,10 @@ namespace Winux.Data
             {
                 sql += " " + filter.Trim();
             }
-            try
-            {
-                this.sqlString = sql;
-                SQLiteCommand cmd = new SQLiteCommand(sql, this.Connection);
-                return cmd.ExecuteNonQuery();
-            }
-            catch (Exception err)
-            {
-                this.errors = err.Message.ToString() + " || " + err.StackTrace;
-                return 0;
-            }
+            
+			this.sqlString = sql;
+            SQLiteCommand cmd = new SQLiteCommand(sql, this.Connection);
+            return cmd.ExecuteNonQuery();
         }
 
         /// <summary>
@@ -404,27 +266,20 @@ namespace Winux.Data
         /// <param name="filter">Фильтрация используя WHERE</param>
         /// <returns></returns>
         public int Delete(string tblName,string filter) {
-            try
+            string sql = "DELETE FROM " + tblName;
+            if (filter.Trim().Length > 0)
             {
-                string sql = "DELETE FROM " + tblName;
-                if (filter.Trim().Length > 0)
-                {
-                    sql += " " + filter;
-                }
+            	sql += " " + filter;
+            }
 
-                this.sqlString = sql;
-                SQLiteCommand cmd = new SQLiteCommand(sql, this.Connection);
-                int res = cmd.ExecuteNonQuery();
-                if (res <= 0)
-                {
-                    this.errors = "Удаление не произведено!";
-                }
-                return res;
+            this.sqlString = sql;
+            SQLiteCommand cmd = new SQLiteCommand(sql, this.Connection);
+            int res = cmd.ExecuteNonQuery();
+            if (res <= 0)
+            {
+                this.errors = "Удаление не произведено!";
             }
-            catch (Exception err) {
-                this.errors = "Техническая ошибка: " + err.Message.ToString() + " || " + err.StackTrace;
-                return 0;
-            }
+            return res;
         }
 
         /// <summary>
@@ -434,53 +289,9 @@ namespace Winux.Data
         /// <returns>Вернет колекцию строк соответствующих запросу</returns>
         public DataRowCollection Query(string sql) {
 			DataSet ds = new DataSet();
-            try
-            {
-                SQLiteDataAdapter da = new SQLiteDataAdapter(sql, this.Connection);
-                da.Fill(ds,"result");
-                return ds.Tables["result"].Rows;
-            }
-            catch(Exception err) {
-                this.errors = err.Message.ToString() + " || " + err.StackTrace;
-                ds.Tables.Add("result");
-                return ds.Tables["result"].Rows;
-            }
-        }
-
-        /// <summary>
-        /// Формирования выборки в формате HTML
-        /// </summary>
-        /// <param name="sql">Запрос на выборку из БД</param>
-        /// <param name="columnsName">Список имен колонок в порядке выборки</param>
-        /// <returns>Вернет все по строчно в формате HTML</returns>
-        public string getInHTML(string sql, List<string> columnsName)
-        {
-            DataRowCollection rows = Query(sql);
-            string html = "";
-            if (rows[0].Table.Columns.Count == columnsName.Count && columnsName.Count > 0)
-            {
-                // Собираем шапку таблицы
-                string columnsHead = "";
-                foreach (string colName in columnsName) {
-                    columnsHead += "<td style='border: 1px solid black; font-weight: bold;'>" + colName + "</td>";
-                }
-
-                html = "<table style='border: 1px solid black; border-collapse: collapse;'><tr style='background-color: grey;'>" + columnsHead + "</tr>";
-                // Выводим строки в таблицу
-                foreach (DataRow dr in rows) {
-                    html += "<tr>";
-                    for (int i = 0; i < columnsName.Count; i++) {
-                        html += "<td style='border: 1px solid black;'>" + dr[i] + "</td>";
-                    }
-                    html += "</tr>";
-                }
-                html += "</table>";
-                return html;
-            }
-            else {
-                errors = "Количество имен колонок не соответсвует количеству выбраных столбцов из БД";
-                return null;
-            }
+            SQLiteDataAdapter da = new SQLiteDataAdapter(sql, this.Connection);
+            da.Fill(ds,"result");
+            return ds.Tables["result"].Rows;
         }
     }
 }

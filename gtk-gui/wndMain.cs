@@ -7,7 +7,7 @@ public partial class wndMain
 
 	private global::Gtk.Action Action;
 
-	private global::Gtk.Action saveAction;
+	private global::Gtk.Action actRefreshTable;
 
 	private global::Gtk.Action actFile;
 
@@ -50,8 +50,8 @@ public partial class wndMain
 		this.Action = new global::Gtk.Action("Action", global::Mono.Unix.Catalog.GetString("Файл"), null, null);
 		this.Action.ShortLabel = global::Mono.Unix.Catalog.GetString("Файл");
 		w1.Add(this.Action, null);
-		this.saveAction = new global::Gtk.Action("saveAction", null, null, "gtk-save");
-		w1.Add(this.saveAction, null);
+		this.actRefreshTable = new global::Gtk.Action("actRefreshTable", null, null, "gtk-refresh");
+		w1.Add(this.actRefreshTable, null);
 		this.actFile = new global::Gtk.Action("actFile", global::Mono.Unix.Catalog.GetString("File"), null, "gtk-file");
 		this.actFile.ShortLabel = global::Mono.Unix.Catalog.GetString("File");
 		w1.Add(this.actFile, null);
@@ -95,8 +95,8 @@ public partial class wndMain
 		w2.Expand = false;
 		w2.Fill = false;
 		// Container child vboxMain.Gtk.Box+BoxChild
-		this.UIManager.AddUiFromString("<ui><toolbar name=\'ToolBar\'><toolitem name=\'saveAction\' action=\'saveAction\'/></to" +
-				"olbar></ui>");
+		this.UIManager.AddUiFromString("<ui><toolbar name=\'ToolBar\'><toolitem name=\'actRefreshTable\' action=\'actRefreshTa" +
+				"ble\'/></toolbar></ui>");
 		this.ToolBar = ((global::Gtk.Toolbar)(this.UIManager.GetWidget("/ToolBar")));
 		this.ToolBar.Name = "ToolBar";
 		this.ToolBar.ShowArrow = false;
@@ -154,6 +154,7 @@ public partial class wndMain
 		this.DefaultHeight = 496;
 		this.Show();
 		this.DeleteEvent += new global::Gtk.DeleteEventHandler(this.OnDeleteEvent);
+		this.actRefreshTable.Activated += new global::System.EventHandler(this.OnActRefreshTableActivated);
 		this.CreateTableAction.Activated += new global::System.EventHandler(this.OnActCreateTableActivated);
 	}
 }
