@@ -27,9 +27,12 @@
   <item id="lblColumAutoincrement" title="Автогенерация" />
   
   //Окна диалоговых сообщений
+  <item id="titleError" title="Ошибка" />
   <item id="titleWarning" title="Внимание" />
   <item id="titleInformation" title="Информация" />
   <item id="msgTableAlreadyExists" title="Таблица ({0}) уже существует в базе данных!" />
   <item id="msgTableCreated" title="Таблица успешно создана" />
+  <item id="msgErrorMakeMainTable" title="По неизвестным причинам, не удалось сделать таблицу ({0}) главной!" />
+  <item id="msgNotSetMainTable" title="Нет главной таблицы! Выберите таблицу вручную." />
   
 </lang>

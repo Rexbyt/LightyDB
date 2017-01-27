@@ -2,17 +2,25 @@
 using System.Windows.Forms;
 using System.Data;
 using Gtk;
-using Winux.Tables;
 using Winux.Data;
 using Winux.Dialogs;
+using WinuxDB;
 
 public partial class wndMain : Gtk.Window
 {
-	public TableAdapter _atblMain;
+	private TableAdapter tbl;
+	private string main_table;
 
 	public wndMain() : base(Gtk.WindowType.Toplevel)
 	{
 		Build();
+
+		this.main_table = Options.Get("main_table");
+		if(main_table.Length > 0)
+		{
+			this.tbl = new TableAdapter(tblMain, this.main_table);
+			this.tbl.ShowTable();
+		}
 	}
 
 	protected void OnDeleteEvent(object sender, DeleteEventArgs a)
@@ -27,46 +35,26 @@ public partial class wndMain : Gtk.Window
 		wct.ShowAll();
 	}
 
-	public void ShowTable(Gtk.TreeView Table, string tableName)
-	{
-		SqliteCompact scp = new SqliteCompact(WinuxDB.Config.connString);
-		DataRowCollection drcColumns = scp.GetTableInfo(tableName);
-		CellRendererText render;
-		System.Type[] types = new System.Type[drcColumns.Count];
-		ListStore ls;
-		string[] columns = new string[drcColumns.Count];
-		int TypeIndex = 0;
-
-		// How clear all columns before adding new columns
-		foreach (DataRow dr in drcColumns) {
-			System.Windows.Forms.Application.DoEvents();
-			render = new CellRendererText();
-			Table.AppendColumn(dr["name"].ToString(), render, "text", TypeIndex);
-			types.SetValue(typeof(string), TypeIndex);
-			TypeIndex++;
-		}
-		ls = new ListStore(types);
-
-		DataRowCollection drcRows = scp.Query("SELECT * FROM "+tableName);
-		foreach (DataRow dr in drcRows)
-		{
-			System.Windows.Forms.Application.DoEvents();
-			for (int i = 0; i < drcColumns.Count; i++)
-			{ 
-				System.Windows.Forms.Application.DoEvents();
-				columns.SetValue(dr[i].ToString(), i);
-			}
-			ls.AppendValues(columns);
-		}
-		Table.Model = ls;
-		Table.ShowAll();
-	}
-
 	protected void OnActRefreshTableActivated(object sender, EventArgs e)
 	{
 		try
 		{
-			this.ShowTable(tblMain, "itbl_test");
+			if (this.main_table.Length > 0)
+			{
+				this.tbl.ShowTable();
+			}
+			else {
+				this.main_table = Options.Get("main_table");
+				if (this.main_table.Length > 0)
+				{
+					this.tbl.SetTableName = this.main_table; // Error?
+					this.tbl.ShowTable();
+				}
+				else { 
+					MsgBox.Info(Config.Lang("msgNotSetMainTable", "Not set main table. Select the table manually."), 
+					            Config.Lang("titleInformation", "Information"));
+				}
+			}
 		}
 		catch (Exception err){
 			ExceptReport.Details(err);

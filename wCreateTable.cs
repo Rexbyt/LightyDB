@@ -232,6 +232,18 @@ namespace WinuxDB
 
 				scp.Execute(this.ColumnsSQL);
 				scp.Close();
+
+				if (chbMainTable.Active)
+				{
+					if (!WinuxDB.Options.Set("main_table", "itbl_" + tblName, true))
+					{
+						MsgBox.Error(
+							string.Format(Config.Lang("msgErrorMakeMainTable",
+													  "For unknown reasons, failed to make ({0}) the main table!"),
+										  tblName), Config.Lang("titleError", "Error"));
+					}
+				}
+
 				MsgBox.Info(Config.Lang("msgTableCreated", "Table created successfully"), Config.Lang("titleInformation", "Information"));
 			}
 			catch (Exception err){

@@ -40,6 +40,10 @@ namespace WinuxDB
 
 		private global::Gtk.Entry txtTableTitle;
 
+		private global::Gtk.Table table2;
+
+		private global::Gtk.CheckButton chbMainTable;
+
 		private global::Gtk.HSeparator hseparator1;
 
 		private global::Gtk.Toolbar toolbar2;
@@ -198,13 +202,33 @@ namespace WinuxDB
 			w14.Expand = false;
 			w14.Fill = false;
 			// Container child vboxMain.Gtk.Box+BoxChild
+			this.table2 = new global::Gtk.Table(((uint)(2)), ((uint)(2)), false);
+			this.table2.Name = "table2";
+			this.table2.RowSpacing = ((uint)(6));
+			this.table2.ColumnSpacing = ((uint)(6));
+			// Container child table2.Gtk.Table+TableChild
+			this.chbMainTable = new global::Gtk.CheckButton();
+			this.chbMainTable.CanFocus = true;
+			this.chbMainTable.Name = "chbMainTable";
+			this.chbMainTable.Label = global::Mono.Unix.Catalog.GetString("This is main table");
+			this.chbMainTable.DrawIndicator = true;
+			this.chbMainTable.UseUnderline = true;
+			this.table2.Add(this.chbMainTable);
+			global::Gtk.Table.TableChild w15 = ((global::Gtk.Table.TableChild)(this.table2[this.chbMainTable]));
+			w15.YOptions = ((global::Gtk.AttachOptions)(4));
+			this.vboxMain.Add(this.table2);
+			global::Gtk.Box.BoxChild w16 = ((global::Gtk.Box.BoxChild)(this.vboxMain[this.table2]));
+			w16.Position = 2;
+			w16.Expand = false;
+			w16.Fill = false;
+			// Container child vboxMain.Gtk.Box+BoxChild
 			this.hseparator1 = new global::Gtk.HSeparator();
 			this.hseparator1.Name = "hseparator1";
 			this.vboxMain.Add(this.hseparator1);
-			global::Gtk.Box.BoxChild w15 = ((global::Gtk.Box.BoxChild)(this.vboxMain[this.hseparator1]));
-			w15.Position = 2;
-			w15.Expand = false;
-			w15.Fill = false;
+			global::Gtk.Box.BoxChild w17 = ((global::Gtk.Box.BoxChild)(this.vboxMain[this.hseparator1]));
+			w17.Position = 3;
+			w17.Expand = false;
+			w17.Fill = false;
 			// Container child vboxMain.Gtk.Box+BoxChild
 			this.UIManager.AddUiFromString("<ui><toolbar name=\'toolbar2\'><toolitem name=\'actAddColumn\' action=\'actAddColumn\'/" +
 					"><toolitem name=\'actDelete\' action=\'actDelete\'/></toolbar></ui>");
@@ -212,10 +236,10 @@ namespace WinuxDB
 			this.toolbar2.Name = "toolbar2";
 			this.toolbar2.ShowArrow = false;
 			this.vboxMain.Add(this.toolbar2);
-			global::Gtk.Box.BoxChild w16 = ((global::Gtk.Box.BoxChild)(this.vboxMain[this.toolbar2]));
-			w16.Position = 3;
-			w16.Expand = false;
-			w16.Fill = false;
+			global::Gtk.Box.BoxChild w18 = ((global::Gtk.Box.BoxChild)(this.vboxMain[this.toolbar2]));
+			w18.Position = 4;
+			w18.Expand = false;
+			w18.Fill = false;
 			// Container child vboxMain.Gtk.Box+BoxChild
 			this.GtkScrolledWindow1 = new global::Gtk.ScrolledWindow();
 			this.GtkScrolledWindow1.Name = "GtkScrolledWindow1";
@@ -227,14 +251,14 @@ namespace WinuxDB
 			this.tblColumns.EnableSearch = false;
 			this.GtkScrolledWindow1.Add(this.tblColumns);
 			this.vboxMain.Add(this.GtkScrolledWindow1);
-			global::Gtk.Box.BoxChild w18 = ((global::Gtk.Box.BoxChild)(this.vboxMain[this.GtkScrolledWindow1]));
-			w18.Position = 4;
+			global::Gtk.Box.BoxChild w20 = ((global::Gtk.Box.BoxChild)(this.vboxMain[this.GtkScrolledWindow1]));
+			w20.Position = 5;
 			this.Add(this.vboxMain);
 			if ((this.Child != null))
 			{
 				this.Child.ShowAll();
 			}
-			this.DefaultWidth = 468;
+			this.DefaultWidth = 553;
 			this.DefaultHeight = 543;
 			this.Show();
 			this.actCreate.Activated += new global::System.EventHandler(this.OnActCreateActivated);

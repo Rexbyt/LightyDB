@@ -174,7 +174,7 @@ namespace Winux.Data
         /// </summary>
         /// <param name="tblName">Название таблицы</param>
         /// <param name="param">Название столбцов и их значения в виде массива Dictionary</param>
-        /// <param name="filter">Вильтр WHERE типа string. Пример указания: "id=1,name=\"Alex\"", без WHERE</param>
+        /// <param name="filter">Вильтр WHERE типа string. Пример указания: "id=1,name=\"Alex\"", с WHERE</param>
         /// <returns>Вернет количество измененных строк</returns>
         public int Update(string tblName,Dictionary<string,object> param, string filter) {
             string sql = "UPDATE " + tblName + " SET ";
