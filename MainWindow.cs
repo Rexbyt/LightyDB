@@ -27,15 +27,13 @@ public partial class wndMain : Gtk.Window
 		wct.ShowAll();
 	}
 
-	public void GetMainTable(Gtk.TreeView Table, string tableName)
+	public void ShowTable(Gtk.TreeView Table, string tableName)
 	{
-		//??????
-		TreeModel tm = Table.Model; 
-
-		SqliteCompact scp = new SqliteCompact(WinuxDB.XData.connString);
+		SqliteCompact scp = new SqliteCompact(WinuxDB.Config.connString);
 		DataRowCollection drcColumns = scp.GetTableInfo(tableName);
 		CellRendererText render;
 		System.Type[] types = new System.Type[drcColumns.Count];
+		ListStore ls;
 		string[] columns = new string[drcColumns.Count];
 		int TypeIndex = 0;
 
@@ -47,7 +45,7 @@ public partial class wndMain : Gtk.Window
 			types.SetValue(typeof(string), TypeIndex);
 			TypeIndex++;
 		}
-		ListStore ls = new ListStore(types);
+		ls = new ListStore(types);
 
 		DataRowCollection drcRows = scp.Query("SELECT * FROM "+tableName);
 		foreach (DataRow dr in drcRows)
@@ -68,7 +66,7 @@ public partial class wndMain : Gtk.Window
 	{
 		try
 		{
-			this.GetMainTable(tblMain, "itbl_test");
+			this.ShowTable(tblMain, "itbl_test");
 		}
 		catch (Exception err){
 			ExceptReport.Details(err);

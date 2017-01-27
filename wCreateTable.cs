@@ -48,14 +48,14 @@ namespace WinuxDB
 			ColumnNameCell.ColumnIndex = 0;
 			ColumnNameCell.TypeCell = "Text";
 			ColumnNameCell.Edited += new EditedHandler(OnEdt);
-			tblColumns.AppendColumn("ColumnName", ColumnNameCell, "text", ColumnNameCell.ColumnIndex);
+			tblColumns.AppendColumn(Config.Lang("lblColumnName", "ColumnName"), ColumnNameCell, "text", ColumnNameCell.ColumnIndex);
 
 			CustomCellRendererText ColumnTitleCell = new CustomCellRendererText();
 			ColumnTitleCell.Editable = true;
 			ColumnTitleCell.ColumnIndex = 1;
 			ColumnTitleCell.TypeCell = "Text";
 			ColumnTitleCell.Edited += new EditedHandler(OnEdt);
-			tblColumns.AppendColumn("ColumnTitle", ColumnTitleCell, "text", ColumnTitleCell.ColumnIndex);
+			tblColumns.AppendColumn(Config.Lang("lblColumnTitle", "ColumnTitle"), ColumnTitleCell, "text", ColumnTitleCell.ColumnIndex);
 
 			CustomCellRendererCombo TypeCell = new CustomCellRendererCombo();
 			ListStore listType = new ListStore(typeof(string));
@@ -72,7 +72,7 @@ namespace WinuxDB
 				listType.AppendValues("Time");
 				listType.AppendValues("Money");
 			TypeCell.Edited += new EditedHandler(OnEdt);
-			tblColumns.AppendColumn("Type", TypeCell, "text", TypeCell.ColumnIndex);
+			tblColumns.AppendColumn(Config.Lang("lblColumnType", "Type"), TypeCell, "text", TypeCell.ColumnIndex);
 
 			CustomCellRendererText SizeCell = new CustomCellRendererText();
 			SizeCell.Editable = true;
@@ -80,31 +80,31 @@ namespace WinuxDB
 			SizeCell.ColumnIndex = 3;
 			SizeCell.TypeCell = "Double";
 			SizeCell.Edited += new EditedHandler(OnEdt);
-			tblColumns.AppendColumn("Size", SizeCell, "text", SizeCell.ColumnIndex);
+			tblColumns.AppendColumn(Config.Lang("lblColumnSize", "Size"), SizeCell, "text", SizeCell.ColumnIndex);
 
 			CustomCellRendererToggle UniqCell = new CustomCellRendererToggle();
 			UniqCell.Activatable = true;
 			UniqCell.Toggled += new ToggledHandler(OnToggled);
 			UniqCell.ColumnIndex = 4;
-			tblColumns.AppendColumn("Uniq", UniqCell, "active", UniqCell.ColumnIndex);
+			tblColumns.AppendColumn(Config.Lang("lblColumUniq", "Uniq"), UniqCell, "active", UniqCell.ColumnIndex);
 
 			CustomCellRendererToggle RequiredCell = new CustomCellRendererToggle();
 			RequiredCell.Activatable = true;
 			RequiredCell.Toggled += new ToggledHandler(OnToggled);
 			RequiredCell.ColumnIndex = 5;
-			tblColumns.AppendColumn("Required", RequiredCell, "active", RequiredCell.ColumnIndex);
+			tblColumns.AppendColumn(Config.Lang("lblColumRequired", "Required"), RequiredCell, "active", RequiredCell.ColumnIndex);
 
 			CustomCellRendererToggle PrimaryCell = new CustomCellRendererToggle();
 			PrimaryCell.Activatable = true;
 			PrimaryCell.Toggled += new ToggledHandler(OnToggled);
 			PrimaryCell.ColumnIndex = 6;
-			tblColumns.AppendColumn("Primary", PrimaryCell, "active", PrimaryCell.ColumnIndex);
+			tblColumns.AppendColumn(Config.Lang("lblColumPrimary", "Primary"), PrimaryCell, "active", PrimaryCell.ColumnIndex);
 
 			CustomCellRendererToggle AutoincrementCell = new CustomCellRendererToggle();
 			AutoincrementCell.Activatable = true;
 			AutoincrementCell.Toggled += new ToggledHandler(OnToggled);
 			AutoincrementCell.ColumnIndex = 7;
-			tblColumns.AppendColumn("Autoincrement", AutoincrementCell, "active", AutoincrementCell.ColumnIndex);
+			tblColumns.AppendColumn(Config.Lang("lblColumAutoincrement", "Autoincrement"), AutoincrementCell, "active", AutoincrementCell.ColumnIndex);
 
 			rows = new ListStore(typeof(string), typeof(string), typeof(string), typeof(double), typeof(bool)
 			                    , typeof(bool), typeof(bool), typeof(bool));
@@ -207,7 +207,7 @@ namespace WinuxDB
 		{
 			try
 			{
-				SqliteCompact scp = new SqliteCompact(XData.connString);
+				SqliteCompact scp = new SqliteCompact(Config.connString);
 				// Collect main request for create table
 				string tblName = txtTableName.Text.Trim().ToLower();
 				string tblTitle = txtTableTitle.Text.Trim();
@@ -216,7 +216,9 @@ namespace WinuxDB
 				int rows = Convert.ToInt32(scp.QueryScalar("SELECT COUNT([name]) FROM sqlite_master WHERE type = 'table' AND LOWER([name]) = 'itbl_"+tblName+"'"));
 				if (rows > 0)
 				{
-					MsgBox.Warning("Table (" + tblName + ") already exists in database!", "Warning");
+					MsgBox.Warning(
+						string.Format(Config.Lang("msgTableAlreadyExists", "Table ({0}) already exists in database!"), tblName), 
+						Config.Lang("titleWarning", "Warning"));
 					return;
 				}
 
@@ -230,7 +232,7 @@ namespace WinuxDB
 
 				scp.Execute(this.ColumnsSQL);
 				scp.Close();
-				MsgBox.Info("Table created successfully", "Information");
+				MsgBox.Info(Config.Lang("msgTableCreated", "Table created successfully"), Config.Lang("titleInformation", "Information"));
 			}
 			catch (Exception err){
 				ExceptReport.Details(err);

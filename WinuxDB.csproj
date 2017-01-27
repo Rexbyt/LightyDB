@@ -83,6 +83,7 @@
     </Reference>
     <Reference Include="System.Data" />
     <Reference Include="System.Data.Linq" />
+    <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="MainWindow.cs" />
@@ -102,6 +103,9 @@
     <Compile Include="gtk-gui\WinuxDB.wCreateTable.cs" />
     <Compile Include="Winux\Data\LinSqliteCompact.cs" />
     <Compile Include="Winux\Data\SqliteCompact.cs" />
+    <Compile Include="Prg\Lang.cs" />
+    <Compile Include="wLogin.cs" />
+    <Compile Include="gtk-gui\WinuxDB.wLogin.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

@@ -469,4 +469,13 @@ Very next item</property>
       </widget>
     </child>
   </widget>
+  <widget class="Gtk.Window" id="WinuxDB.wLogin" design-size="400 217">
+    <property name="MemberName" />
+    <property name="Title" translatable="yes">Authorization</property>
+    <property name="WindowPosition">Center</property>
+    <property name="Modal">True</property>
+    <child>
+      <placeholder />
+    </child>
+  </widget>
 </stetic-interface>
