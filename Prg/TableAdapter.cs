@@ -39,7 +39,7 @@ namespace WinuxDB
 				return;
 			}
 
-			SqliteCompact scp = new SqliteCompact(WinuxDB.Config.connString);
+			SqliteCompact scp = new SqliteCompact(Config.connString);
 			DataRowCollection drcColumns = scp.GetTableInfo(this.dbTableName_);
 			CellRendererText render;
 			System.Type[] types = new System.Type[drcColumns.Count];

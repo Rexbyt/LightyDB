@@ -16,6 +16,9 @@ namespace Winux.Dialogs
 				return ResponseType.None;
 			}
 		}
+		public static ResponseType Apply(string message) {
+			return MsgBox.Apply(message, "Apply");
+		}
 
 		public static ResponseType Info(string message, string title)
 		{
@@ -31,6 +34,10 @@ namespace Winux.Dialogs
 				return ResponseType.None;
 			}
 		}
+		public static ResponseType Info(string message)
+		{
+			return MsgBox.Info(message, "Information");
+		}
 
 		public static ResponseType Error(string message, string title)
 		{
@@ -45,6 +52,10 @@ namespace Winux.Dialogs
 			else {
 				return ResponseType.None;
 			}
+		}
+		public static ResponseType Error(string message)
+		{
+			return MsgBox.Error(message, "Error");
 		}
 
 		public static ResponseType Question(string message, string title)
@@ -64,6 +75,10 @@ namespace Winux.Dialogs
 				return ResponseType.None;
 			}
 		}
+		public static ResponseType Question(string message)
+		{
+			return MsgBox.Question(message, "Question");
+		}
 
 		public static ResponseType Warning(string message, string title)
 		{
@@ -81,6 +96,10 @@ namespace Winux.Dialogs
 				msg.Destroy();
 				return ResponseType.None;
 			}
+		}
+		public static ResponseType Warning(string message)
+		{
+			return MsgBox.Warning(message, "Warning");
 		}
 	}
 }

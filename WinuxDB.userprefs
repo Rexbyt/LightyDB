@@ -6,11 +6,10 @@
   </MonoDevelop.Ide.DebuggingService.Breakpoints>
   <MonoDevelop.Ide.Workbench ActiveDocument="MainWindow.cs">
     <Files>
-      <File FileName="MainWindow.cs" Line="1" Column="1" />
+      <File FileName="MainWindow.cs" Line="57" Column="66" />
+      <File FileName="Prg\TableAdapter.cs" Line="47" Column="52" />
       <File FileName="wCreateTable.cs" Line="238" Column="11" />
       <File FileName="Prg\ProgramOptions.cs" Line="17" Column="4" />
-      <File FileName="Winux\Data\SqliteCompact.cs" Line="293" Column="34" />
-      <File FileName="Prg\TableAdapter.cs" Line="24" Column="31" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.ItemProperties.WinuxDB PreferredExecutionTarget="MonoDevelop.Default" />
