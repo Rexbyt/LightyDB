@@ -3,6 +3,7 @@
 
 using System;
 using System.Data;
+using Winux.Dialogs;
 using Winux.Data;
 using Gtk;
 
@@ -17,18 +18,17 @@ namespace WinuxDB
 
 		public string SetTableName { 
 			get {
-				return this.dbTableName_;
+				return dbTableName_;
 			}
 
 			set {
-				this.dbTableName_ = value;
+				dbTableName_ = value;
 			}
 		}
 
-		public TableAdapter(Gtk.TreeView Table, string dbTableName)
+		public TableAdapter(Gtk.TreeView Table)
 		{
 			table = Table;
-			dbTableName_ = dbTableName;
 		}
 
 		public void ShowTable()
@@ -42,17 +42,36 @@ namespace WinuxDB
 			SqliteCompact scp = new SqliteCompact(Config.connString);
 			DataRowCollection drcColumns = scp.GetTableInfo(this.dbTableName_);
 			CellRendererText render;
+
+			// Whether we need a table
+			if (drcColumns == null || drcColumns.Count <= 0) { 
+				MsgBox.Error(
+							string.Format(Config.Lang("msgErrorGetTableInfo",
+					                                  "The required table ({0}) does not exist!"),
+										  this.dbTableName_), Config.Lang("titleError", "Error"));
+				return;
+			}
+
 			System.Type[] types = new System.Type[drcColumns.Count];
 
 			string[] columns = new string[drcColumns.Count];
 			int TypeIndex = 0;
+
+			// Get all headers from table opt_headers if they exists else null
+			Headers headers = Table.Headers(this.dbTableName_);
 
 			// How clear all columns before adding new columns
 			foreach (DataRow dr in drcColumns)
 			{
 				System.Windows.Forms.Application.DoEvents();
 				render = new CellRendererText();
-				this.table.AppendColumn(dr["name"].ToString(), render, "text", TypeIndex);
+				string colName = "";
+				if (headers != null && headers.column.ContainsKey(dr["name"].ToString()))
+					colName = headers.column[dr["name"].ToString()];
+				else
+					colName = dr["name"].ToString();
+
+				this.table.AppendColumn(colName, render, "text", TypeIndex);
 				types.SetValue(typeof(string), TypeIndex);
 				TypeIndex++;
 			}

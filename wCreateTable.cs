@@ -203,6 +203,7 @@ namespace WinuxDB
 		}
 
 		private string ColumnsSQL = "";
+		private string tblHeaders = "";
 		protected void OnActCreateActivated(object sender, EventArgs e)
 		{
 			try
@@ -231,11 +232,22 @@ namespace WinuxDB
 				this.ColumnsSQL = this.ColumnsSQL.Trim().Substring(0, (this.ColumnsSQL.Trim().Length - 1))+");";
 
 				scp.Execute(this.ColumnsSQL);
+				// Add headers
+				if (this.tblHeaders.Trim().Length > 0)
+				{
+					if (!Options.Set("headers", "itbl_" + tblName, this.tblHeaders, true))
+					{
+						MsgBox.Error(
+							string.Format(Config.Lang("msgErrorSetTableHeaders",
+													  "For unknown reasons, failed to install the headers for the table ({0})!"),
+										  tblName), Config.Lang("titleError", "Error"));
+					}
+				}
 				scp.Close();
 
 				if (chbMainTable.Active)
 				{
-					if (!WinuxDB.Options.Set("main_table", "itbl_" + tblName, true))
+					if (!Options.Set("main_table", "itbl_" + tblName, true))
 					{
 						MsgBox.Error(
 							string.Format(Config.Lang("msgErrorMakeMainTable",
@@ -256,15 +268,18 @@ namespace WinuxDB
 		{
 			TreeIter newIter;
 			TreePath newPath = path;
+			string tblTitle = txtTableTitle.Text.Trim();
+			string columnsHeaders = "";
+
 
 			while (model.GetIter(out newIter, newPath))
 			{
-				string colName = model.GetValue(newIter, 0).ToString().Trim();
 				string colTitle = model.GetValue(newIter, 1).ToString().Trim();
 				string colType = model.GetValue(newIter, 2).ToString().Trim();
 				double colSize = Convert.ToDouble(model.GetValue(newIter, 3));
 				string colUniq = Convert.ToBoolean(model.GetValue(newIter, 4)) ? "UNIQUE" : "";
 				string colRequired = Convert.ToBoolean(model.GetValue(newIter, 5)) ? "_" : "";
+				string colName = model.GetValue(newIter, 0).ToString().Trim() + colRequired;
 				string colPrimary = Convert.ToBoolean(model.GetValue(newIter, 6)) ? "PRIMARY KEY" : "";
 				string colAutoincrement = Convert.ToBoolean(model.GetValue(newIter, 7)) ? "AUTOINCREMENT" : "";
 
@@ -280,11 +295,31 @@ namespace WinuxDB
 				if (colSize > 0.0)
 					size = "(" + colSize.ToString() + ")";
 
-				this.ColumnsSQL += colName+colRequired + " " + toSqlite3Type + size + " NOT NULL " + colPrimary + " " + 
+				// Collect the list of headers
+				// If title not exists, when leave the name of the id column
+				if (colTitle.Trim().Length > 0) 
+				{
+					columnsHeaders += "\""+colName+"\":\""+colTitle+"\",";
+				}
+
+				// Collect the command on column create
+				this.ColumnsSQL += colName + " " + toSqlite3Type + size + " NOT NULL " + colPrimary + " " + 
 					colAutoincrement + " " + colUniq + ",";
 
 				newPath.Next();
 			}
+
+			if (tblTitle.Length > 0)
+				this.tblHeaders += "\"table\":\""+tblTitle+"\"";
+
+			if (tblTitle.Length > 0 && columnsHeaders.Length > 0)
+				this.tblHeaders += ",";
+
+			if (columnsHeaders.Length > 0)
+				this.tblHeaders += "\"column\":{" + columnsHeaders.Substring(0, (columnsHeaders.Length - 1)) + "}";
+
+			this.tblHeaders = "{"+this.tblHeaders+"}";
+
 			return true;
 		}
 }

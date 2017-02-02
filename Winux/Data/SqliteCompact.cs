@@ -291,7 +291,10 @@ namespace Winux.Data
 			DataSet ds = new DataSet();
             SQLiteDataAdapter da = new SQLiteDataAdapter(sql, this.Connection);
             da.Fill(ds,"result");
-            return ds.Tables["result"].Rows;
+			if (ds.Tables["result"] != null)
+				return ds.Tables["result"].Rows;
+			else
+				return null;
         }
     }
 }

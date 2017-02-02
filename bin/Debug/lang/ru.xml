@@ -34,5 +34,7 @@
   <item id="msgTableCreated" title="Таблица успешно создана" />
   <item id="msgErrorMakeMainTable" title="По неизвестным причинам, не удалось сделать таблицу ({0}) главной!" />
   <item id="msgNotSetMainTable" title="Нет главной таблицы! Выберите таблицу вручную." />
+  <item id="msgErrorSetTableHeaders" title="По неизвестным причинам, не удалось указать заголовки таблицы ({0})!" />
+  <item id="msgErrorGetTableInfo" title="Требуемой таблицы ({0}) не существует!" />
   
 </lang>

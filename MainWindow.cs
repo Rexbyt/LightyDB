@@ -14,11 +14,11 @@ public partial class wndMain : Gtk.Window
 	public wndMain() : base(Gtk.WindowType.Toplevel)
 	{
 		Build();
-
+		this.tbl = new TableAdapter(tblMain);
 		this.main_table = Options.Get("main_table");
-		if(main_table.Length > 0)
+		if(main_table.Length > 0 && Options.Get("tbl_start_open") == "1")
 		{
-			this.tbl = new TableAdapter(tblMain, this.main_table);
+			this.tbl.SetTableName = this.main_table;
 			this.tbl.ShowTable();
 		}
 	}
@@ -45,10 +45,9 @@ public partial class wndMain : Gtk.Window
 			}
 			else {
 				this.main_table = Options.Get("main_table");
-				MsgBox.Info(this.main_table);
 				if (this.main_table.Length > 0)
 				{
-					this.tbl.SetTableName = this.main_table; // Error?
+					this.tbl.SetTableName = this.main_table;
 					this.tbl.ShowTable();
 				}
 				else { 
