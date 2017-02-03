@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Text.RegularExpressions;
 using Winux.Dialogs;
 using Winux.Data;
 using System.Data;
@@ -26,6 +28,10 @@ namespace WinuxDB
 	public partial class wCreateTable : Gtk.Window
 	{
 		private ListStore rows;
+		public string tbl_name = "";
+		private List<string> cmbTablesID = new List<string>();
+		// Origin form title
+		private string ttl = "";
 
 		public wCreateTable() :
 				base(Gtk.WindowType.Toplevel)
@@ -34,7 +40,37 @@ namespace WinuxDB
 
 			try
 			{
+				// FORTEST
+
+				// Save origin form title
+				this.ttl = this.Title;
+
+				// Create table for edit columns table of user
 				this.CreateTableColumns();
+
+				// Get all user tables
+				DataRowCollection drcTables = Table.GetTablesName("itbl_%");
+				if (drcTables.Count > 0)
+				{
+					int sortIndex = 0;
+					cmbTableList.InsertText(sortIndex, "");
+					this.cmbTablesID.Add("");
+					foreach (DataRow dr in drcTables)
+					{
+						sortIndex++;
+						string tblID = dr[0].ToString().Trim();
+						this.cmbTablesID.Add(tblID);
+						// Get header for current table id
+						Headers header = Table.Headers(tblID);
+						if(header != null && header.table.Trim().Length > 0)
+							cmbTableList.InsertText(sortIndex, header.table);
+						else
+							cmbTableList.InsertText(sortIndex, tblID);
+					}
+				}
+
+				// Get selected table info
+				this.GetInfoSelectedTable(this.tbl_name);
 			}
 			catch (Exception err)
 			{
@@ -256,6 +292,13 @@ namespace WinuxDB
 					}
 				}
 
+				// Insert new table in ComboBox and selecting him
+				int newTblIndex = this.cmbTablesID.Count;
+				cmbTableList.InsertText(newTblIndex, tblTitle);
+				cmbTablesID.Add(tblName);
+				cmbTableList.Active = newTblIndex;
+				this.tbl_name = tblName;
+
 				MsgBox.Info(Config.Lang("msgTableCreated", "Table created successfully"), Config.Lang("titleInformation", "Information"));
 			}
 			catch (Exception err){
@@ -322,5 +365,49 @@ namespace WinuxDB
 
 			return true;
 		}
-}
+
+		protected void OnCmbTableListChanged(object sender, EventArgs e)
+		{
+			// Get data of selected table for edit
+			this.tbl_name = this.cmbTablesID[cmbTableList.Active];
+			this.GetInfoSelectedTable(this.tbl_name);
+		}
+
+		private void GetInfoSelectedTable(string tblname)
+		{
+			// Get data of selected table for edit method
+			if (tblname.Trim().Length > 0)
+			{
+				SqliteCompact scp = new SqliteCompact(Config.connString);
+				this.Title = this.ttl + " [" + tblname + "]";
+				// Table Name
+				Match mtch = Regex.Match(tblname.Trim(), "^itbl_([\\w\\d]+)$", RegexOptions.IgnoreCase);
+				txtTableName.Text = mtch.Groups[1].Value;
+				// Table Title
+				Headers header = Table.Headers(tblname);
+				if (header != null && header.table.Trim().Length > 0)
+					txtTableTitle.Text = header.table.Trim();
+				// This is main table
+				if (Options.Get("main_table").Trim() == tblname)
+					chbMainTable.Active = true;
+				else
+					chbMainTable.Active = false;
+				// Get column list in table
+				//DataRowCollection drcRows = Table.GetTableColumn(tblname);
+			}
+			else
+			{
+				this.Title = this.ttl;
+				// Clear all info
+				txtTableName.Text = "";
+				txtTableTitle.Text = "";
+				txtvDescription.Buffer.Clear();
+				cmbTblDependence.Clear();
+				cmbClmDependence.Clear();
+				chbMainTable.Active = false;
+				this.rows.Clear();
+				this.rows.AppendValues("id", "ID", "Integer", 0, true, false, true, true);
+			}
+		}
+	}
 }

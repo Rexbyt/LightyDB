@@ -4,13 +4,12 @@
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
     <BreakpointStore />
   </MonoDevelop.Ide.DebuggingService.Breakpoints>
-  <MonoDevelop.Ide.Workbench ActiveDocument="MainWindow.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="wCreateTable.cs">
     <Files>
-      <File FileName="MainWindow.cs" Line="16" Column="11" />
-      <File FileName="wCreateTable.cs" Line="243" Column="36" />
-      <File FileName="Prg\ProgramOptions.cs" Line="83" Column="3" />
-      <File FileName="Winux\Data\SqliteCompact.cs" Line="297" Column="17" />
-      <File FileName="Prg\TableAdapter.cs" Line="81" Column="35" />
+      <File FileName="MainWindow.cs" Line="27" Column="3" />
+      <File FileName="wCreateTable.cs" Line="43" Column="15" />
+      <File FileName="Prg\Table.cs" Line="81" Column="5" />
+      <File FileName="Winux\Data\SqliteCompact.cs" Line="43" Column="28" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.ItemProperties.WinuxDB PreferredExecutionTarget="MonoDevelop.Default" />
