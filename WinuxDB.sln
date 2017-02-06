@@ -3,6 +3,8 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WinuxDB", "WinuxDB.csproj", "{B8A3D14C-6D7A-4635-A019-3BB3AA9F48BD}"
 EndProject
+Project("{9344BDBB-3E7F-41FC-A0DD-8665D75EE146}") = "WinuxLang", "WinuxLang\WinuxLang.mdproj", "{FEFAB26D-BD24-4C71-BEA6-43CA76FF791A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x86 = Debug|x86
@@ -13,5 +15,9 @@ Global
 		{B8A3D14C-6D7A-4635-A019-3BB3AA9F48BD}.Debug|x86.Build.0 = Debug|x86
 		{B8A3D14C-6D7A-4635-A019-3BB3AA9F48BD}.Release|x86.ActiveCfg = Release|x86
 		{B8A3D14C-6D7A-4635-A019-3BB3AA9F48BD}.Release|x86.Build.0 = Release|x86
+		{FEFAB26D-BD24-4C71-BEA6-43CA76FF791A}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{FEFAB26D-BD24-4C71-BEA6-43CA76FF791A}.Debug|x86.Build.0 = Debug|Any CPU
+		{FEFAB26D-BD24-4C71-BEA6-43CA76FF791A}.Release|x86.ActiveCfg = Release|Any CPU
+		{FEFAB26D-BD24-4C71-BEA6-43CA76FF791A}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

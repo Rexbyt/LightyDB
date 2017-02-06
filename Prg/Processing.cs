@@ -1,5 +1,5 @@
 ﻿using Gtk;
-namespace Winux.Dialogs
+namespace WinuxDB
 {
 	public class Processing
 	{

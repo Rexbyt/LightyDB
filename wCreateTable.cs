@@ -5,6 +5,7 @@ using Winux.Dialogs;
 using Winux.Data;
 using System.Data;
 using Gtk;
+using Mono.Unix;
 namespace WinuxDB
 {
 	public class CustomCellRendererText : CellRendererText
@@ -49,25 +50,7 @@ namespace WinuxDB
 				this.CreateTableColumns();
 
 				// Get all user tables
-				DataRowCollection drcTables = Table.GetTablesName("itbl_%");
-				if (drcTables.Count > 0)
-				{
-					int sortIndex = 0;
-					cmbTableList.InsertText(sortIndex, "");
-					this.cmbTablesID.Add("");
-					foreach (DataRow dr in drcTables)
-					{
-						sortIndex++;
-						string tblID = dr[0].ToString().Trim();
-						this.cmbTablesID.Add(tblID);
-						// Get header for current table id
-						Headers header = Table.Headers(tblID);
-						if(header != null && header.table.Trim().Length > 0)
-							cmbTableList.InsertText(sortIndex, header.table);
-						else
-							cmbTableList.InsertText(sortIndex, tblID);
-					}
-				}
+				this.GetNewTablesList();
 
 				// Get selected table info
 				this.GetInfoSelectedTable(this.tbl_name);
@@ -84,14 +67,14 @@ namespace WinuxDB
 			ColumnNameCell.ColumnIndex = 0;
 			ColumnNameCell.TypeCell = "Text";
 			ColumnNameCell.Edited += new EditedHandler(OnEdt);
-			tblColumns.AppendColumn(Config.Lang("lblColumnName", "ColumnName"), ColumnNameCell, "text", ColumnNameCell.ColumnIndex);
+			tblColumns.AppendColumn(Catalog.GetString("Name"), ColumnNameCell, "text", ColumnNameCell.ColumnIndex);
 
 			CustomCellRendererText ColumnTitleCell = new CustomCellRendererText();
 			ColumnTitleCell.Editable = true;
 			ColumnTitleCell.ColumnIndex = 1;
 			ColumnTitleCell.TypeCell = "Text";
 			ColumnTitleCell.Edited += new EditedHandler(OnEdt);
-			tblColumns.AppendColumn(Config.Lang("lblColumnTitle", "ColumnTitle"), ColumnTitleCell, "text", ColumnTitleCell.ColumnIndex);
+			tblColumns.AppendColumn(Catalog.GetString("Title"), ColumnTitleCell, "text", ColumnTitleCell.ColumnIndex);
 
 			CustomCellRendererCombo TypeCell = new CustomCellRendererCombo();
 			ListStore listType = new ListStore(typeof(string));
@@ -108,7 +91,7 @@ namespace WinuxDB
 				listType.AppendValues("Time");
 				listType.AppendValues("Money");
 			TypeCell.Edited += new EditedHandler(OnEdt);
-			tblColumns.AppendColumn(Config.Lang("lblColumnType", "Type"), TypeCell, "text", TypeCell.ColumnIndex);
+			tblColumns.AppendColumn(Catalog.GetString("Type"), TypeCell, "text", TypeCell.ColumnIndex);
 
 			CustomCellRendererText SizeCell = new CustomCellRendererText();
 			SizeCell.Editable = true;
@@ -116,31 +99,31 @@ namespace WinuxDB
 			SizeCell.ColumnIndex = 3;
 			SizeCell.TypeCell = "Double";
 			SizeCell.Edited += new EditedHandler(OnEdt);
-			tblColumns.AppendColumn(Config.Lang("lblColumnSize", "Size"), SizeCell, "text", SizeCell.ColumnIndex);
+			tblColumns.AppendColumn(Catalog.GetString("Size"), SizeCell, "text", SizeCell.ColumnIndex);
 
 			CustomCellRendererToggle UniqCell = new CustomCellRendererToggle();
 			UniqCell.Activatable = true;
 			UniqCell.Toggled += new ToggledHandler(OnToggled);
 			UniqCell.ColumnIndex = 4;
-			tblColumns.AppendColumn(Config.Lang("lblColumUniq", "Uniq"), UniqCell, "active", UniqCell.ColumnIndex);
+			tblColumns.AppendColumn(Catalog.GetString("Unique"), UniqCell, "active", UniqCell.ColumnIndex);
 
 			CustomCellRendererToggle RequiredCell = new CustomCellRendererToggle();
 			RequiredCell.Activatable = true;
 			RequiredCell.Toggled += new ToggledHandler(OnToggled);
 			RequiredCell.ColumnIndex = 5;
-			tblColumns.AppendColumn(Config.Lang("lblColumRequired", "Required"), RequiredCell, "active", RequiredCell.ColumnIndex);
+			tblColumns.AppendColumn(Catalog.GetString("Required"), RequiredCell, "active", RequiredCell.ColumnIndex);
 
 			CustomCellRendererToggle PrimaryCell = new CustomCellRendererToggle();
 			PrimaryCell.Activatable = true;
 			PrimaryCell.Toggled += new ToggledHandler(OnToggled);
 			PrimaryCell.ColumnIndex = 6;
-			tblColumns.AppendColumn(Config.Lang("lblColumPrimary", "Primary"), PrimaryCell, "active", PrimaryCell.ColumnIndex);
+			tblColumns.AppendColumn(Catalog.GetString("Primary"), PrimaryCell, "active", PrimaryCell.ColumnIndex);
 
 			CustomCellRendererToggle AutoincrementCell = new CustomCellRendererToggle();
 			AutoincrementCell.Activatable = true;
 			AutoincrementCell.Toggled += new ToggledHandler(OnToggled);
 			AutoincrementCell.ColumnIndex = 7;
-			tblColumns.AppendColumn(Config.Lang("lblColumAutoincrement", "Autoincrement"), AutoincrementCell, "active", AutoincrementCell.ColumnIndex);
+			tblColumns.AppendColumn(Catalog.GetString("Autoincrement"), AutoincrementCell, "active", AutoincrementCell.ColumnIndex);
 
 			rows = new ListStore(typeof(string), typeof(string), typeof(string), typeof(double), typeof(bool)
 			                    , typeof(bool), typeof(bool), typeof(bool));
@@ -254,8 +237,8 @@ namespace WinuxDB
 				if (rows > 0)
 				{
 					MsgBox.Warning(
-						string.Format(Config.Lang("msgTableAlreadyExists", "Table ({0}) already exists in database!"), tblName), 
-						Config.Lang("titleWarning", "Warning"));
+						string.Format(Catalog.GetString("Table ({0}) already exists in database!"), tblName), 
+						Catalog.GetString("Warning"));
 					return;
 				}
 
@@ -274,9 +257,8 @@ namespace WinuxDB
 					if (!Options.Set("headers", "itbl_" + tblName, this.tblHeaders, true))
 					{
 						MsgBox.Error(
-							string.Format(Config.Lang("msgErrorSetTableHeaders",
-													  "For unknown reasons, failed to install the headers for the table ({0})!"),
-										  tblName), Config.Lang("titleError", "Error"));
+							string.Format(Catalog.GetString("For unknown reasons, failed to install the headers for the table ({0})!"),
+										  tblName), Catalog.GetString("Error"));
 					}
 				}
 				scp.Close();
@@ -286,9 +268,8 @@ namespace WinuxDB
 					if (!Options.Set("main_table", "itbl_" + tblName, true))
 					{
 						MsgBox.Error(
-							string.Format(Config.Lang("msgErrorMakeMainTable",
-													  "For unknown reasons, failed to make ({0}) the main table!"),
-										  tblName), Config.Lang("titleError", "Error"));
+							string.Format(Catalog.GetString("For unknown reasons, failed to make ({0}) the main table!"),
+										  tblName), Catalog.GetString("Error"));
 					}
 				}
 
@@ -299,7 +280,7 @@ namespace WinuxDB
 				cmbTableList.Active = newTblIndex;
 				this.tbl_name = tblName;
 
-				MsgBox.Info(Config.Lang("msgTableCreated", "Table created successfully"), Config.Lang("titleInformation", "Information"));
+				MsgBox.Info(Catalog.GetString("Table created successfully"), Catalog.GetString("Information"));
 			}
 			catch (Exception err){
 				ExceptReport.Details(err);
@@ -408,6 +389,44 @@ namespace WinuxDB
 				this.rows.Clear();
 				this.rows.AppendValues("id", "ID", "Integer", 0, true, false, true, true);
 			}
+		}
+
+		// Get all user tables
+		private void GetNewTablesList()
+		{
+			// Processing start
+			Processing prcs = new Processing();
+			prcs.Start(Catalog.GetString("Getting a list of tables..."));
+			// Clear old list
+			ListStore ls = new ListStore(typeof(string));
+			cmbTableList.Model = ls;
+			// Collect new list tables
+			DataRowCollection drcTables = Table.GetTablesName("itbl_%");
+			if (drcTables.Count > 0)
+			{
+				int sortIndex = 0;
+				cmbTableList.InsertText(sortIndex, "");
+				this.cmbTablesID.Add("");
+				foreach (DataRow dr in drcTables)
+				{
+					sortIndex++;
+					string tblID = dr[0].ToString().Trim();
+					this.cmbTablesID.Add(tblID);
+					// Get header for current table id
+					Headers header = Table.Headers(tblID);
+					if (header != null && header.table.Trim().Length > 0)
+						cmbTableList.InsertText(sortIndex, header.table);
+					else
+						cmbTableList.InsertText(sortIndex, tblID);
+				}
+			}
+			prcs.Stop();
+		}
+
+		protected void OnBtnRefreshTablesClicked(object sender, EventArgs e)
+		{
+			// Get all user tables
+			this.GetNewTablesList();
 		}
 	}
 }

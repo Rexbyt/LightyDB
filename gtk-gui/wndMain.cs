@@ -50,7 +50,8 @@ public partial class wndMain
 		this.Action = new global::Gtk.Action("Action", global::Mono.Unix.Catalog.GetString("Файл"), null, null);
 		this.Action.ShortLabel = global::Mono.Unix.Catalog.GetString("Файл");
 		w1.Add(this.Action, null);
-		this.actRefreshTable = new global::Gtk.Action("actRefreshTable", null, null, "gtk-refresh");
+		this.actRefreshTable = new global::Gtk.Action("actRefreshTable", null, global::Mono.Unix.Catalog.GetString("Refresh"), "gtk-refresh");
+		this.actRefreshTable.ShortLabel = "";
 		w1.Add(this.actRefreshTable, null);
 		this.actFile = new global::Gtk.Action("actFile", global::Mono.Unix.Catalog.GetString("File"), null, "gtk-file");
 		this.actFile.ShortLabel = global::Mono.Unix.Catalog.GetString("File");
@@ -100,6 +101,8 @@ public partial class wndMain
 		this.ToolBar = ((global::Gtk.Toolbar)(this.UIManager.GetWidget("/ToolBar")));
 		this.ToolBar.Name = "ToolBar";
 		this.ToolBar.ShowArrow = false;
+		this.ToolBar.ToolbarStyle = ((global::Gtk.ToolbarStyle)(0));
+		this.ToolBar.IconSize = ((global::Gtk.IconSize)(3));
 		this.vboxMain.Add(this.ToolBar);
 		global::Gtk.Box.BoxChild w3 = ((global::Gtk.Box.BoxChild)(this.vboxMain[this.ToolBar]));
 		w3.Position = 1;
@@ -124,16 +127,6 @@ public partial class wndMain
 		this.StatusBar.Spacing = 5;
 		this.StatusBar.BorderWidth = ((uint)(5));
 		this.StatusBar.HasResizeGrip = false;
-		// Container child StatusBar.Gtk.Box+BoxChild
-		this.cmb1 = global::Gtk.ComboBox.NewText();
-		this.cmb1.AppendText(global::Mono.Unix.Catalog.GetString("First item"));
-		this.cmb1.AppendText(global::Mono.Unix.Catalog.GetString("Second item"));
-		this.cmb1.AppendText(global::Mono.Unix.Catalog.GetString("Next item"));
-		this.cmb1.AppendText(global::Mono.Unix.Catalog.GetString("Very next item"));
-		this.cmb1.Name = "cmb1";
-		this.StatusBar.Add(this.cmb1);
-		global::Gtk.Box.BoxChild w6 = ((global::Gtk.Box.BoxChild)(this.StatusBar[this.cmb1]));
-		w6.Position = 1;
 		// Container child StatusBar.Gtk.Box+BoxChild
 		this.pb = new global::Gtk.ProgressBar();
 		this.pb.Name = "pb";

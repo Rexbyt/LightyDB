@@ -2,6 +2,7 @@
 using System.Windows.Forms;
 using System.Data;
 using Gtk;
+using Mono.Unix;
 using Winux.Data;
 using Winux.Dialogs;
 using WinuxDB;
@@ -51,8 +52,8 @@ public partial class wndMain : Gtk.Window
 					this.tbl.ShowTable();
 				}
 				else { 
-					MsgBox.Info(Config.Lang("msgNotSetMainTable", "Not set main table. Select the table manually."), 
-					            Config.Lang("titleInformation", "Information"));
+					MsgBox.Info(Catalog.GetString("Not set main table. Select the table manually."), 
+					            Catalog.GetString("Information"));
 				}
 			}
 		}

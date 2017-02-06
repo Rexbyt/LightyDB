@@ -97,7 +97,6 @@
     <Compile Include="Winux\Data\SqlCompact.cs" />
     <Compile Include="Winux\Data\OleDbCompact.cs" />
     <Compile Include="Winux\Data\DbCompact.cs" />
-    <Compile Include="Winux\Dialogs\Processing.cs" />
     <Compile Include="Winux\Dialogs\MsgBox.cs" />
     <Compile Include="Winux\Dialogs\ExceptReport.cs" />
     <Compile Include="Winux\Dialogs\Prompt.cs" />
@@ -105,12 +104,13 @@
     <Compile Include="gtk-gui\WinuxDB.wCreateTable.cs" />
     <Compile Include="Winux\Data\LinSqliteCompact.cs" />
     <Compile Include="Winux\Data\SqliteCompact.cs" />
-    <Compile Include="Prg\Lang.cs" />
+    <Compile Include="Prg\SysConfig.cs" />
     <Compile Include="wLogin.cs" />
     <Compile Include="gtk-gui\WinuxDB.wLogin.cs" />
     <Compile Include="Prg\TableAdapter.cs" />
     <Compile Include="Prg\ProgramOptions.cs" />
     <Compile Include="Prg\Table.cs" />
+    <Compile Include="Prg\Processing.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
