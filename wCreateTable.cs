@@ -374,7 +374,44 @@ namespace WinuxDB
 				else
 					chbMainTable.Active = false;
 				// Get column list in table
-				//DataRowCollection drcRows = Table.GetTableColumn(tblname);
+				DataRowCollection drcRows = Table.GetTableColumn(tblname);
+				try
+				{
+					// Clear old list of columns
+					this.rows.Clear();
+
+					// Show columns
+					foreach (DataRow dr in drcRows)
+					{
+						string name = dr["name"].ToString().Trim().Length > 0 ? dr["name"].ToString() : "...";
+						string title = dr["title"].ToString().Trim().Length > 0 ? dr["title"].ToString().ToLower() : "...";
+						string type = dr["type"].ToString().Trim().Length > 0 ? dr["type"].ToString() : "...";
+						if (type == "varchar")
+						{
+							type = "Text";
+						}
+						else
+						{
+							string firstChar = type[0].ToString().ToUpper();
+							type = type.Remove(0, 1);
+							type = type.Insert(0, firstChar);
+						}
+
+						double size = dr["size"].ToString().Trim().Length > 0 ? Convert.ToDouble(dr["size"]) : 0;
+
+						bool unique = Convert.ToInt32(dr["unique"]) == 1 ? true : false;
+						Match mtchReq = Regex.Match(dr["name"].ToString().Trim(), "_{1}$");
+						bool required = mtchReq.Success ? true : false;
+						bool primary = Convert.ToInt32(dr["primary"]) == 1 ? true : false;
+						bool autoincrement = Convert.ToInt32(dr["autoincrement"]) == 1 ? true : false;
+						this.rows.AppendValues(name, title, type, size, unique, required, primary, autoincrement);
+					}
+				}
+				catch (Exception err) {
+					ExceptReport.Details(err);
+				}
+				tblColumns.Model = this.rows;
+				//tblColumns.ShowAll();
 			}
 			else
 			{
@@ -382,9 +419,6 @@ namespace WinuxDB
 				// Clear all info
 				txtTableName.Text = "";
 				txtTableTitle.Text = "";
-				txtvDescription.Buffer.Clear();
-				cmbTblDependence.Clear();
-				cmbClmDependence.Clear();
 				chbMainTable.Active = false;
 				this.rows.Clear();
 				this.rows.AppendValues("id", "ID", "Integer", 0, true, false, true, true);
